@@ -9,6 +9,9 @@ GEM
     backports (2.6.7)
     builder (3.1.4)
     descendants_tracker (0.0.1)
+    em-pg (0.1.2)
+      eventmachine (>= 0.12)
+      pg (>= 0.14)
     em-synchrony (1.0.3)
       eventmachine (>= 1.0.0.beta.1)
     em-websocket (0.4.0)
@@ -43,6 +46,7 @@ GEM
     log4r (1.1.10)
     multi_json (1.6.1)
     multi_xml (0.5.3)
+    pg (0.14.1)
     rack (1.5.2)
     rack-accept (0.4.5)
       rack (>= 0.4)
@@ -54,6 +58,11 @@ GEM
     rack-respond_to (0.9.8)
       rack-accept-media-types (>= 0.6)
     redis (3.0.2)
+    sequel (3.44.0)
+    sync-em-pg (0.0.1)
+      em-pg
+      em-synchrony
+      pg
     virtus (0.5.4)
       backports (~> 2.6.1)
       descendants_tracker (~> 0.0.1)
@@ -67,3 +76,5 @@ DEPENDENCIES
   grape
   hiredis
   redis
+  sequel
+  sync-em-pg
