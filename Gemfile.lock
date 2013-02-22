@@ -30,7 +30,7 @@ GEM
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.5.3)
     eventmachine (1.0.0)
-    fold-core (0.0.1)
+    fold-core (0.0.2)
       active_model_serializers
       activerecord (~> 3.2)
     goliath (1.0.1)
@@ -87,7 +87,7 @@ PLATFORMS
 
 DEPENDENCIES
   em-synchrony
-  fold-core
+  fold-core (= 0.0.2)
   goliath
   grape
   hiredis

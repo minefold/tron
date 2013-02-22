@@ -2,9 +2,8 @@ require 'bundler/setup'
 require 'goliath'
 require 'grape'
 require 'redis'
-require 'core'
 
-require './app/apis/api'
+require './api'
 
 class Application < Goliath::API
 
