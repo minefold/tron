@@ -1,32 +1,15 @@
-GIT
-  remote: https://github.com/minefold/core.git
-  revision: af30866358cd88c7032fef9bf346d63c7a97828f
-  specs:
-    minefold-core (0.0.1)
-      active_model_serializers
-      activerecord (~> 3.2)
-
 GEM
   remote: https://rubygems.org/
+  remote: https://rKKxtwRRk41d4r3p9FHr@gem.fury.io/me/
   specs:
-    active_model_serializers (0.6.0)
-      activemodel (>= 3.0)
-    activemodel (3.2.12)
-      activesupport (= 3.2.12)
-      builder (~> 3.0.0)
-    activerecord (3.2.12)
-      activemodel (= 3.2.12)
-      activesupport (= 3.2.12)
-      arel (~> 3.0.2)
-      tzinfo (~> 0.3.29)
     activesupport (3.2.12)
       i18n (~> 0.6)
       multi_json (~> 1.0)
-    arel (3.0.2)
     async-rack (0.5.1)
       rack (~> 1.1)
     backports (2.6.7)
     builder (3.0.4)
+    core (0.0.6)
     descendants_tracker (0.0.1)
     em-pg (0.1.2)
       eventmachine (>= 0.12)
@@ -81,7 +64,6 @@ GEM
       em-pg
       em-synchrony
       pg
-    tzinfo (0.3.35)
     virtus (0.5.4)
       backports (~> 2.6.1)
       descendants_tracker (~> 0.0.1)
@@ -90,10 +72,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  core
   em-synchrony
   goliath
   grape
   hiredis
-  minefold-core!
   redis
   sync-em-pg

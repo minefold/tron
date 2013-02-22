@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+source 'https://rKKxtwRRk41d4r3p9FHr@gem.fury.io/me/'
 ruby '1.9.3'
 
 gem 'goliath'
@@ -10,4 +11,4 @@ gem 'redis'
 
 gem 'sync-em-pg'
 
-gem 'minefold-core', git: 'https://github.com/minefold/core.git'
+gem 'core'
