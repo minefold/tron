@@ -2,7 +2,7 @@ require 'bundler/setup'
 require 'goliath'
 require 'grape'
 require 'redis'
-require 'minefold'
+require 'core'
 
 require './app/apis/api'
 

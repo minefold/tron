@@ -1,5 +1,3 @@
-require 'minefold'
-
 class API < Grape::API
   version 'v1', :using => :header, :vendor => :minefold
   format :json
@@ -18,8 +16,8 @@ class API < Grape::API
 
     get '/:id' do
       $redis = redis
-      server = Minefold::Server.where(id: params[:id]).first
-      Minefold::Serializers::ServerSerializer.new(server)
+      server = Server.where(id: params[:id]).first
+      ServerSerializer.new(server)
     end
 
   end
