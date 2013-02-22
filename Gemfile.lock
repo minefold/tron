@@ -1,5 +1,6 @@
 GEM
   remote: https://rKKxtwRRk41d4r3p9FHr@gem.fury.io/me/
+  remote: https://rubygems.org/
   specs:
     active_model_serializers (0.6.0)
       activemodel (>= 3.0)
