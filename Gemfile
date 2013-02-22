@@ -9,4 +9,5 @@ gem 'hiredis'
 gem 'redis'
 
 gem 'sync-em-pg'
-gem 'sequel'
+
+gem 'minefold-core', git: 'https://github.com/minefold/core.git'
