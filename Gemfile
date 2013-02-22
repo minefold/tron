@@ -11,4 +11,4 @@ gem 'sync-em-pg'
 
 #--
 
-gem 'core'
+gem 'fold-core'

@@ -19,9 +19,6 @@ GEM
       rack (~> 1.1)
     backports (2.6.7)
     builder (3.0.4)
-    core (0.0.1)
-      active_model_serializers
-      activerecord (~> 3.2)
     descendants_tracker (0.0.1)
     em-pg (0.1.2)
       eventmachine (>= 0.12)
@@ -32,6 +29,9 @@ GEM
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.5.3)
     eventmachine (1.0.0)
+    fold-core (0.0.1)
+      active_model_serializers
+      activerecord (~> 3.2)
     goliath (1.0.1)
       async-rack
       em-synchrony (>= 1.0.0)
@@ -85,8 +85,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  core
   em-synchrony
+  fold-core
   goliath
   grape
   hiredis
