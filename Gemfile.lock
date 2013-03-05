@@ -2,8 +2,6 @@ GEM
   remote: https://rKKxtwRRk41d4r3p9FHr@gem.fury.io/me/
   remote: https://rubygems.org/
   specs:
-    active_model_serializers (0.6.0)
-      activemodel (>= 3.0)
     activemodel (3.2.12)
       activesupport (= 3.2.12)
       builder (~> 3.0.0)
@@ -15,6 +13,7 @@ GEM
     activesupport (3.2.12)
       i18n (~> 0.6)
       multi_json (~> 1.0)
+    aggregate (0.2.2)
     arel (3.0.2)
     async-rack (0.5.1)
       rack (~> 1.1)
@@ -26,13 +25,19 @@ GEM
       pg (>= 0.14)
     em-synchrony (1.0.3)
       eventmachine (>= 1.0.0.beta.1)
-    em-websocket (0.4.0)
+    em-websocket (0.5.0)
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.5.3)
-    eventmachine (1.0.0)
+    eventmachine (1.0.1)
+    faraday (0.8.6)
+      multipart-post (~> 1.1)
     fold-core (0.0.2)
-      active_model_serializers
       activerecord (~> 3.2)
+      activesupport (~> 3.2)
+      friendly_id (~> 4.0)
+      paranoia (~> 1.2)
+      state_machine (~> 1.1)
+    friendly_id (4.0.9)
     goliath (1.0.1)
       async-rack
       em-synchrony (>= 1.0.0)
@@ -44,23 +49,32 @@ GEM
       rack (>= 1.2.2)
       rack-contrib
       rack-respond_to
-    grape (0.3.0)
+    grape (0.3.2)
       activesupport
       builder
-      hashie (~> 1.2)
+      hashie (>= 1.2.0)
       multi_json (>= 1.3.2)
       multi_xml (>= 0.5.2)
       rack
       rack-accept
       rack-mount
       virtus
-    hashie (1.2.0)
+    hashie (2.0.2)
     hiredis (0.4.5)
     http_parser.rb (0.5.3)
-    i18n (0.6.1)
+    i18n (0.6.4)
+    librato-metrics (1.0.3)
+      aggregate (~> 0.2.2)
+      faraday (~> 0.7)
+      multi_json
+    librato-rack (0.1.0)
+      librato-metrics (~> 1.0.2)
     log4r (1.1.10)
     multi_json (1.6.1)
     multi_xml (0.5.3)
+    multipart-post (1.2.0)
+    paranoia (1.2.0)
+      activerecord (>= 3.0.0)
     pg (0.14.1)
     rack (1.5.2)
     rack-accept (0.4.5)
@@ -72,12 +86,13 @@ GEM
       rack (>= 1.0.0)
     rack-respond_to (0.9.8)
       rack-accept-media-types (>= 0.6)
-    redis (3.0.2)
+    redis (3.0.3)
+    state_machine (1.1.2)
     sync-em-pg (0.0.1)
       em-pg
       em-synchrony
       pg
-    tzinfo (0.3.35)
+    tzinfo (0.3.36)
     virtus (0.5.4)
       backports (~> 2.6.1)
       descendants_tracker (~> 0.0.1)
@@ -87,9 +102,10 @@ PLATFORMS
 
 DEPENDENCIES
   em-synchrony
-  fold-core (= 0.0.2)
+  fold-core
   goliath
   grape
   hiredis
+  librato-rack
   redis
   sync-em-pg
