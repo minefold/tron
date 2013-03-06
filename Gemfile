@@ -1,4 +1,6 @@
-source "https://#{ENV['GEMFURY']}@gem.fury.io/me/"
+if ENV['GEMFURY_URL']
+  source ENV['GEMFURY_URL']
+end
 source 'https://rubygems.org'
 ruby '2.0.0'
 
