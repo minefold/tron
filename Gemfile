@@ -14,4 +14,4 @@ gem 'librato-rack'
 
 #--
 
-gem 'fold-core'
+gem 'fold-core', '0.0.3'
