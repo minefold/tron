@@ -1,23 +1,7 @@
-require 'core'
-require 'librato-rack'
+require 'grape/api'
 
-class API < Grape::API
-  use Librato::Rack
-
-  version '0.0.1', :using => :header, :vendor => :minefold
-  format :json
-
-  rescue_from ActiveRecord::RecordNotFound do |e|
-    Rack::Response.new([], 404)
-  end
-
-  helpers do
-    def current_user
-      @current_user = User.where(authentication_token: request.env['REMOTE_USER']).first
-    end
-  end
-
-  resource :servers do
+module Tron
+  class Servers < Grape::API
 
     http_basic do |username, password|
       User.where(authentication_token: username).first
@@ -30,7 +14,6 @@ class API < Grape::API
     end
     post '/' do
       # TODO Validate gameplay settings with Brock
-
       server = Server.create!(
         name: params[:name],
         creator: current_user,
@@ -102,55 +85,4 @@ class API < Grape::API
     end
 
   end
-
-  resource :user do
-
-    http_basic do |username, password|
-      User.where(authentication_token: username).first
-    end
-
-    get '/' do
-      UserSerializer.new(current_user)
-    end
-
-    get '/servers' do
-      servers = current_user.created_servers
-      Serializers::List.new(servers.map {|s| Serializers::Server.new(s) })
-    end
-
-  end
-
-  resource :games do
-
-    params do
-      requires :slug, type: String
-    end
-    get '/:slug' do
-      game = Core::GAMES.find(params[:slug])
-    end
-
-    params do
-      requires :slug, type: String
-      requires :state, type: String, regexp: /up|idle|starting|stopping|crashed/
-    end
-    get '/:slug/servers/:state' do
-      game = Core::GAMES.find(params[:slug])
-      servers = Server.where(funpack_id: game.funpack_id)
-            .where(state: Server::States[params[:state].to_sym])
-
-      Serializers::List.new(servers.map {|s| Serializers::Server.new(s) })
-    end
-
-    params do
-      requires :slug, type: String
-    end
-    get '/:slug/servers' do
-      game = Core::GAMES.find(params[:slug])
-      servers = Server.where(funpack_id: game.funpack_id)
-
-      Serializers::List.new(servers.map {|s| Serializers::Server.new(s) })
-    end
-
-  end
-
 end

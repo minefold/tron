@@ -11,6 +11,7 @@ PATH
       uniquify
 
 GEM
+  remote: https://Xr6yAQVs67Uxz2FArent@gem.fury.io/me/
   remote: https://rubygems.org/
   specs:
     activemodel (3.2.12)
