@@ -1,7 +1,7 @@
 require 'grape/api'
 
 module Tron
-  class User < Grape::API
+  class UserAPI < Grape::API
 
     http_basic do |username, password|
       User.where(authentication_token: username).first

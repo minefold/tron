@@ -1,10 +1,10 @@
 require 'grape/api'
 
 module Tron
-  class Servers < Grape::API
+  class ServersAPI < Grape::API
 
     http_basic do |username, password|
-      User.where(authentication_token: username).first
+      ::User.where(authentication_token: username).first
     end
 
     params do
@@ -64,7 +64,31 @@ module Tron
     end
     put '/:id/start' do
       server = Server.where(id: params[:id]).first!
+
+      # Create a session or find an old one
+      session = server.sessions.active.first_or_create(
+        user_id: current_user.id
+      )
+      session.save!
+
+      # Start the server in the PartyCloud
+      s = PartyCloud.start_server_session(
+        server.id,
+        session.id,
+        server.attributes_for_party_cloud
+      )
+
+      # Update session information
+      session[:started_at] = s[:at]
+      session[:ip] = s[:ip]
+      session[:port] = s[:port]
+      session.save!
+
+      # Mark server as up
       server.start!
+
+      # Wait for response on server key
+      Serializers::Server.new(server)
     end
 
 
@@ -73,15 +97,25 @@ module Tron
     end
     put '/:id/stop' do
       server = Server.where(id: params[:id]).first!
+
+      session = server.current_session
+
+      # TODO Return if there's no current session
+
+      # Stop server session
+      s = PartyCloud.stop_server_session(
+        server.id,
+        session.id
+      )
+
+      # Mark session as over
+      session.ended_at = s[:at]
+      session.save!
+
+      # Mark server as stopped
       server.stop!
-    end
 
-
-    params do
-    end
-    put '/:id/restart' do
-      server = Server.where(id: params[:id]).first!
-      server.restart!
+      Serializers::Server.new(server)
     end
 
   end

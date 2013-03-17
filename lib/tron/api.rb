@@ -2,34 +2,34 @@ require 'grape/api'
 require 'librato-rack'
 require 'active_record'
 
-require 'tron/games'
-require 'tron/servers'
-require 'tron/user'
+require 'tron/games_api'
+require 'tron/servers_api'
+require 'tron/user_api'
 
 module Tron
   class API < Grape::API
-   use Librato::Rack
+    use Librato::Rack
 
-   version '0.0.1', :using => :header, :vendor => :minefold
-   format :json
+    version '0.0.1', :using => :header, :vendor => :minefold
+    format :json
 
-   helpers do
+    helpers do
      def current_user
-       @current_user = User.where(authentication_token: request.env['REMOTE_USER']).first
+       @current_user ||= User.where(authentication_token: request.env['REMOTE_USER']).first
      end
-   end
+    end
 
-   namespace('servers') do
-     mount Tron::Servers
-   end
+    namespace('servers') do
+     mount Tron::ServersAPI
+    end
 
-   namespace('user') do
-     mount Tron::User
-   end
+    namespace('user') do
+     mount Tron::UserAPI
+    end
 
-   namespace('games') do
-     mount Tron::Games
-   end
+    namespace('games') do
+     mount Tron::GamesAPI
+    end
 
   end
 end
