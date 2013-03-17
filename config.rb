@@ -6,3 +6,5 @@ config['redis'] = EventMachine::Synchrony::ConnectionPool.new(size: 5) do
 end
 
 ActiveRecord::Base.establish_connection(ENV['DATABASE_URL'])
+
+ActiveRecord::Base.logger = Logger.new(STDOUT)
