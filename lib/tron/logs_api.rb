@@ -21,7 +21,12 @@ module Tron
 
       EM.next_tick do
         EM::Mongo::Tail.collection(collection) do |doc|
-          env.stream_send(doc.to_json + "\n")
+          sorted = {}
+          sorted['ts'] = doc.delete('ts') if doc['ts']
+          sorted['event'] = doc.delete('event') if doc['event']
+          sorted.merge!(doc)
+          
+          env.stream_send(sorted.to_json + "\n")
         end
       end
 
