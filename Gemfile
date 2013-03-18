@@ -22,4 +22,4 @@ gem 'rack-cors'
 
 #--
 
-gem 'fold-core', path: '0.0.4'
+gem 'fold-core', '0.0.4'
