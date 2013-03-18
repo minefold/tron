@@ -83,32 +83,39 @@ module Tron
       session.save!
 
       # Start the server in the PartyCloud
-      env.config[:redis].lpush(
-        "servers:requests:start",
-        {
-          server_id: server.party_cloud_id,
-          funpack_id: server.funpack.party_cloud_id,
-          reply_key:  server.party_cloud_id,
-          data: server.attributes_for_party_cloud
-        }.to_json
-      )
-
-      # Start the server in the PartyCloud
- env.config[:redis].subscribe("servers:requests:start:#{server.party_cloud_id}") do |on|
+      sub = Redis.new
+      sub.subscribe("servers:requests:start:#{server.party_cloud_id}") do |on|
         on.message do |chan, raw|
           msg = JSON.parse(raw, symbolize_names: true)
-          # Update session information
-          session[:started_at] = msg[:at]
-          session[:ip] = msg[:ip]
-          session[:port] = msg[:port]
-          session.save!
 
-          # Mark server as up
-          server.start!
+          # TODO handle failed
+          if msg[:state] == 'started'
+            # Update session information
+            session[:started_at] = Time.at(msg[:at])
+            session[:ip] = msg[:ip]
+            session[:port] = msg[:port]
+            session.save!
 
-          # Wait for response on server key
-          # The `return` is *magic*
-          return Serializers::Server.new(server)
+            # Mark server as up
+            server.start!
+
+            # Wait for response on server key
+            # The `return` is *magic*
+            return Serializers::Server.new(server)
+          end
+        end
+
+        on.subscribe do
+          # Start the server in the PartyCloud
+          env.config[:redis].lpush(
+            "servers:requests:start",
+            {
+              server_id: server.party_cloud_id,
+              funpack_id: server.funpack.party_cloud_id,
+              reply_key:  server.party_cloud_id,
+              data: server.attributes_for_party_cloud.to_json
+            }.to_json
+          )
         end
       end
     end

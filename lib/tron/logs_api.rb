@@ -19,8 +19,10 @@ module Tron
 
       collection = db.collection("logs_#{server.party_cloud_id}")
 
-      EM::Mongo::Tail.collection(collection) do |doc|
-        env.stream_send(doc.to_json + "\n")
+      EM.next_tick do
+        EM::Mongo::Tail.collection(collection) do |doc|
+          env.stream_send(doc.to_json + "\n")
+        end
       end
 
       streaming_response(202, {
