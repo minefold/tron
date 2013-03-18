@@ -11,7 +11,6 @@ PATH
       uniquify
 
 GEM
-  remote: https://Xr6yAQVs67Uxz2FArent@gem.fury.io/me/
   remote: https://rubygems.org/
   specs:
     activemodel (3.2.12)
@@ -32,6 +31,9 @@ GEM
       rack (~> 1.1)
     backports (2.6.7)
     brock (0.1.5)
+    bson (1.8.3)
+    bson_ext (1.8.3)
+      bson (~> 1.8.3)
     builder (3.0.4)
     cookiejar (0.3.0)
     descendants_tracker (0.0.1)
@@ -87,6 +89,8 @@ GEM
     librato-rack (0.1.0)
       librato-metrics (~> 1.0.2)
     log4r (1.1.10)
+    mongo (1.8.3)
+      bson (~> 1.8.3)
     multi_json (1.7.0)
     multi_xml (0.5.3)
     multipart-post (1.2.0)
@@ -121,6 +125,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bson_ext
   em-http-request
   em-synchrony
   fold-core!
@@ -128,6 +133,7 @@ DEPENDENCIES
   grape
   hiredis
   librato-rack
+  mongo
   rack (= 1.5.2)
   rack-contrib
   rack-cors
