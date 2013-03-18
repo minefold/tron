@@ -20,12 +20,11 @@ module Tron
       collection = db.collection("logs_#{server.party_cloud_id}")
 
       EM::Mongo::Tail.collection(collection) do |doc|
-        env.chunked_stream_send(doc.to_json + "\n")
+        env.stream_send(doc.to_json + "\n")
       end
 
-      chunked_streaming_response(200, {
-        'Content-Type' => 'text/plain',
-        'X-Stream' => 'Goliath'
+      streaming_response(202, {
+        'Content-Type' => 'application/json'
       })
     end
 
