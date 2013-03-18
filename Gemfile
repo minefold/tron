@@ -11,6 +11,8 @@ gem 'grape'
 gem 'hiredis'
 gem 'redis'
 gem 'sync-em-pg'
+gem 'mongo'
+gem 'bson_ext'
 gem 'librato-rack'
 
 gem 'rack-contrib'
@@ -18,4 +20,4 @@ gem 'rack-cors'
 
 #--
 
-gem 'fold-core', path: '~/src/core'
+gem 'fold-core', path: '../core'

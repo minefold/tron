@@ -7,10 +7,11 @@ require 'redis'
 
 require 'tron'
 
-class Application < Goliath::API
+$stdout.sync = true
 
+class Application < Goliath::API
   def response(env)
     Tron::API.call(env)
   end
-
 end
+
