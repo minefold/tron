@@ -3,7 +3,7 @@ require 'mongo/connector'
 require 'eventmachine/mongo/tail'
 
 module Tron
-  class Logs < Goliath::API
+  class LogsAPI < Goliath::API
     def self.call(env)
       if env['REQUEST_PATH'] =~ /(\w+)\/logs$/
         new($1).call(env)

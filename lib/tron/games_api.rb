@@ -1,7 +1,7 @@
 require 'grape/api'
 
 module Tron
-  class Games < Grape::API
+  class GamesAPI < Grape::API
 
   end
 end

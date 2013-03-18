@@ -2,10 +2,10 @@ require 'grape/api'
 require 'librato-rack'
 require 'active_record'
 
-require 'tron/games'
-require 'tron/logs'
-require 'tron/servers'
-require 'tron/user'
+require 'tron/games_api'
+require 'tron/logs_api'
+require 'tron/servers_api'
+require 'tron/user_api'
 
 module Tron
   class API < Grape::API
@@ -16,22 +16,21 @@ module Tron
 
     helpers do
       def current_user
-        @current_user = User.where(authentication_token: request.env['REMOTE_USER']).first
+        @current_user ||= User.where(authentication_token: request.env['REMOTE_USER']).first
       end
     end
 
-   namespace('servers') do
-     mount Tron::Servers
-     mount Tron::Logs
-   end
+    namespace('servers') do
+      mount Tron::ServersAPI
+      mount Tron::LogsAPI
+    end
 
-   namespace('user') do
-     mount Tron::User
-   end
+    namespace('user') do
+      mount Tron::UserAPI
+    end
 
-   namespace('games') do
-     mount Tron::Games
-   end
-
+    namespace('games') do
+      mount Tron::GamesAPI
+    end
   end
 end
