@@ -16,8 +16,9 @@ module Tron
     post '/' do
       # Grab the party-cloud-id from, uh, the Party Cloud
       url = 'https://api.partycloud.com/servers'
+
       req = EventMachine::HttpRequest.new(url).post head: {
-        'authorization' => ['foo', 'bar']
+        'authorization' => ENV['PARTY_CLOUD_TOKEN'].split(':')
       }
 
       party_cloud_id = JSON.parse(req.response)['id']
@@ -82,18 +83,18 @@ module Tron
       session.save!
 
       # Start the server in the PartyCloud
-      PartyCloud.redis.lpush(
+      env.config[:redis].lpush(
         "servers:requests:start",
         {
           server_id: server.party_cloud_id,
           funpack_id: server.funpack.party_cloud_id,
-          reply_key:  session.party_cloud_id,
+          reply_key:  server.party_cloud_id,
           data: server.attributes_for_party_cloud
         }.to_json
       )
 
       # Start the server in the PartyCloud
- PartyCloud.redis.subscribe("servers:requests:start:#{server.party_cloud_id}") do |on|
+ env.config[:redis].subscribe("servers:requests:start:#{server.party_cloud_id}") do |on|
         on.message do |chan, raw|
           msg = JSON.parse(raw, symbolize_names: true)
           # Update session information
