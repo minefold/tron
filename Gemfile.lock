@@ -25,6 +25,7 @@ GEM
     activesupport (3.2.12)
       i18n (~> 0.6)
       multi_json (~> 1.0)
+    addressable (2.3.3)
     aggregate (0.2.2)
     arel (3.0.2)
     async-rack (0.5.1)
@@ -32,10 +33,19 @@ GEM
     backports (2.6.7)
     brock (0.1.5)
     builder (3.0.4)
+    cookiejar (0.3.0)
     descendants_tracker (0.0.1)
+    em-http-request (1.0.3)
+      addressable (>= 2.2.3)
+      cookiejar
+      em-socksify
+      eventmachine (>= 1.0.0.beta.4)
+      http_parser.rb (>= 0.5.3)
     em-pg (0.1.2)
       eventmachine (>= 0.12)
       pg (>= 0.14)
+    em-socksify (0.2.1)
+      eventmachine (>= 1.0.0.beta.4)
     em-synchrony (1.0.3)
       eventmachine (>= 1.0.0.beta.1)
     em-websocket (0.5.0)
@@ -111,6 +121,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  em-http-request
   em-synchrony
   fold-core!
   goliath

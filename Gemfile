@@ -13,6 +13,8 @@ gem 'redis'
 gem 'sync-em-pg'
 gem 'librato-rack'
 
+gem 'em-http-request'
+
 gem 'rack-contrib'
 gem 'rack-cors'
 

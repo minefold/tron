@@ -1,10 +1,11 @@
 require 'grape/api'
+require 'em-synchrony/em-http'
 
 module Tron
   class ServersAPI < Grape::API
 
     http_basic do |username, password|
-      ::User.where(authentication_token: username).first
+      User.where(authentication_token: username).first
     end
 
     params do
@@ -13,13 +14,22 @@ module Tron
       optional :gameplay, type: Hash
     end
     post '/' do
+      # Grab the party-cloud-id from, uh, the Party Cloud
+      url = 'https://api.partycloud.com/servers'
+      req = EventMachine::HttpRequest.new(url).post head: {
+        'authorization' => ['foo', 'bar']
+      }
+
+      party_cloud_id = JSON.parse(req.response)['id']
+
       # TODO Validate gameplay settings with Brock
+
       server = Server.create!(
         name: params[:name],
         creator: current_user,
         settings: params[:gameplay] || {},
         funpack_id: params[:funpack_id],
-        party_cloud_id: "dummy-party-cloud-id-#{rand(10000)}"
+        party_cloud_id: party_cloud_id
       )
 
       Serializers::Server.new(server)
@@ -72,23 +82,34 @@ module Tron
       session.save!
 
       # Start the server in the PartyCloud
-      s = PartyCloud.start_server_session(
-        server.id,
-        session.id,
-        server.attributes_for_party_cloud
+      PartyCloud.redis.lpush(
+        "servers:requests:start",
+        {
+          server_id: server.party_cloud_id,
+          funpack_id: server.funpack.party_cloud_id,
+          reply_key:  session.party_cloud_id,
+          data: server.attributes_for_party_cloud
+        }.to_json
       )
 
-      # Update session information
-      session[:started_at] = s[:at]
-      session[:ip] = s[:ip]
-      session[:port] = s[:port]
-      session.save!
+      # Start the server in the PartyCloud
+ PartyCloud.redis.subscribe("servers:requests:start:#{server.party_cloud_id}") do |on|
+        on.message do |chan, raw|
+          msg = JSON.parse(raw, symbolize_names: true)
+          # Update session information
+          session[:started_at] = msg[:at]
+          session[:ip] = msg[:ip]
+          session[:port] = msg[:port]
+          session.save!
 
-      # Mark server as up
-      server.start!
+          # Mark server as up
+          server.start!
 
-      # Wait for response on server key
-      Serializers::Server.new(server)
+          # Wait for response on server key
+          # The `return` is *magic*
+          return Serializers::Server.new(server)
+        end
+      end
     end
 
 
@@ -100,20 +121,20 @@ module Tron
 
       session = server.current_session
 
-      # TODO Return if there's no current session
+      if server.up?
+        # Stop server session
+        s = PartyCloud.stop_server_session(
+          server.id,
+          session.id
+        )
 
-      # Stop server session
-      s = PartyCloud.stop_server_session(
-        server.id,
-        session.id
-      )
+        # Mark session as over
+        session.ended_at = s[:at]
+        session.save!
 
-      # Mark session as over
-      session.ended_at = s[:at]
-      session.save!
-
-      # Mark server as stopped
-      server.stop!
+        # Mark server as stopped
+        server.stop!
+      end
 
       Serializers::Server.new(server)
     end
