@@ -20,9 +20,16 @@ module EventMachine
 
       def next_doc
         if @tail.has_next?
-          doc = @tail.next_document
-          @cb.call(doc)
-          EM.next_tick method(:next_doc)
+          doc = nil
+          begin
+            doc = @tail.next_document
+            @cb.call(doc)
+            EM.next_tick method(:next_doc)
+
+          rescue ::Mongo::OperationFailure
+            EM.add_timer(1, method(:next_doc))
+          end
+
         else
           EM.add_timer(1, method(:next_doc))
         end

@@ -15,14 +15,18 @@ module Tron
     end
 
     def response(env)
-      collection = db.collection("logs_#{@server_id}")
+      server = Server.where(id: @server_id).first!
+
+      collection = db.collection("logs_#{server.party_cloud_id}")
 
       EM::Mongo::Tail.collection(collection) do |doc|
         env.chunked_stream_send(doc.to_json + "\n")
       end
 
-      headers = { 'Content-Type' => 'text/plain', 'X-Stream' => 'Goliath' }
-      chunked_streaming_response(200, headers)
+      chunked_streaming_response(200, {
+        'Content-Type' => 'text/plain',
+        'X-Stream' => 'Goliath'
+      })
     end
 
     def db

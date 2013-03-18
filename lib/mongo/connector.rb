@@ -13,8 +13,8 @@ module Mongo
           db.authenticate auth['username'], auth['password']
           db
         else
-          db_name = mongo.auths.any? ? mongo.auths.first['db_name'] : nil
-          db_name ||= URI.parse(uri).path[1..-1]
+          db_name = conn.auths.any? ? conn.auths.first['db_name'] : nil
+          db_name ||= URI.parse(ENV['MONGODB_URI']).path[1..-1]
           conn[db_name]
         end
       end
