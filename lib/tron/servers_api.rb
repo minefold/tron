@@ -15,11 +15,15 @@ module Tron
     end
     post '/' do
       # Grab the party-cloud-id from, uh, the Party Cloud
-      url = 'https://api.partycloud.com/servers'
+      url = ENV['GRAYSKULL_URL'] + '/servers'
 
       req = EventMachine::HttpRequest.new(url).post head: {
         'authorization' => ENV['PARTY_CLOUD_TOKEN'].split(':')
       }
+
+      if req.error
+        raise 'Party Cloud call failed'
+      end
 
       party_cloud_id = JSON.parse(req.response)['id']
 

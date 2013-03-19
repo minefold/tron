@@ -17,10 +17,8 @@ module Tron
     def response(env)
       server = Server.where(id: @server_id).first!
 
-      collection = db.collection("logs_#{server.party_cloud_id}")
-
       EM.next_tick do
-        EM::Mongo::Tail.collection(collection) do |doc|
+        EM::Mongo::Tail.collection(db, "logs_#{server.party_cloud_id}") do |doc|
           sorted = {}
           sorted['ts'] = doc.delete('ts') if doc['ts']
           sorted['event'] = doc.delete('event') if doc['event']

@@ -3,30 +3,39 @@ require 'mongo'
 module EventMachine
   module Mongo
     class Tail
-      def self.collection(collection, *a, &b)
-        new(collection, EM::Callback(*a, &b))
+      def self.collection(db, collection_name, *a, &b)
+        new(db, collection_name, EM::Callback(*a, &b))
       end
 
-      def initialize(collection, cb)
-        @tail ||= ::Mongo::Cursor.new(
-          collection,
-          tailable: true,
-          order: [['$natural', 1]]
-        )
+      def initialize(db, collection_name, cb)
+        @db = db
+        @collection_name = collection_name
+
         @cb = cb
 
         next_doc
       end
 
+      def tail
+        @tail ||= begin
+          ::Mongo::Cursor.new(
+            @db.collection(@collection_name),
+            tailable: true,
+            order: [['$natural', 1]]
+          )
+        end
+      end
+
       def next_doc
-        if @tail.has_next?
+        if tail.has_next?
           doc = nil
           begin
-            doc = @tail.next_document
+            doc = tail.next_document
             @cb.call(doc)
             EM.next_tick method(:next_doc)
 
-          rescue ::Mongo::OperationFailure
+          rescue ::Mongo::OperationFailure => e
+            @tail = nil
             EM.add_timer(1, method(:next_doc))
           end
 
