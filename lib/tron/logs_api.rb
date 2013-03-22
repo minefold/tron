@@ -4,6 +4,8 @@ require 'eventmachine/mongo/tail'
 
 module Tron
   class LogsAPI < Goliath::API
+    use Librato::Rack
+    
     def self.call(env)
       if env['REQUEST_PATH'] =~ /(\w+)\/logs$/
         new($1).call(env)
@@ -23,13 +25,14 @@ module Tron
           sorted['ts'] = doc.delete('ts') if doc['ts']
           sorted['event'] = doc.delete('event') if doc['event']
           sorted.merge!(doc)
-          
+
           env.stream_send(sorted.to_json + "\n")
         end
       end
 
       streaming_response(202, {
-        'Content-Type' => 'application/json'
+        'Content-Type' => 'application/json',
+        'Access-Control-Allow-Origin' => '*',
       })
     end
 
