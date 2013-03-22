@@ -4,8 +4,6 @@ require 'eventmachine/mongo/tail'
 
 module Tron
   class LogsAPI < Goliath::API
-    use Librato::Rack
-    
     def self.call(env)
       if env['REQUEST_PATH'] =~ /(\w+)\/logs$/
         new($1).call(env)
@@ -17,7 +15,17 @@ module Tron
     end
 
     def response(env)
+      # auth = Rack::Auth::Basic::Request.new(env)
+      # p env, auth
+      
+      # p auth.credentials
+      # user = User.where(authentication_token: auth.credentials.first).first
+      #
+      # server = if user.admin?
       server = Server.where(id: @server_id).first!
+      # else
+      #   Server.where(id: @server_id, creator: user).first!
+      # end
 
       EM.next_tick do
         EM::Mongo::Tail.collection(db, "logs_#{server.party_cloud_id}") do |doc|
@@ -32,7 +40,8 @@ module Tron
 
       streaming_response(202, {
         'Content-Type' => 'application/json',
-        'Access-Control-Allow-Origin' => '*',
+        'Access-Control-Allow-Origin' => env['HTTP_ORIGIN'],
+        'Access-Control-Allow-Credentials' => 'true',
       })
     end
 

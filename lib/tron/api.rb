@@ -9,8 +9,6 @@ require 'tron/user_api'
 
 module Tron
   class API < Grape::API
-    use Librato::Rack
-
     version '0.0.1', :using => :header, :vendor => :minefold
     format :json
 
@@ -18,6 +16,15 @@ module Tron
       def current_user
         @current_user ||= User.where(authentication_token: request.env['REMOTE_USER']).first
       end
+    end
+
+    before do
+      header "Access-Control-Allow-Origin", "*"
+      header 'Access-Control-Allow-Credentials', 'true'
+    end
+
+    get '/' do
+      "hi"
     end
 
     namespace('servers') do
