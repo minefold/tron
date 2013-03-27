@@ -1,138 +1,31 @@
 GEM
-  remote: https://Xr6yAQVs67Uxz2FArent@gem.fury.io/me/
   remote: https://rubygems.org/
   specs:
-    activemodel (3.2.12)
-      activesupport (= 3.2.12)
-      builder (~> 3.0.0)
-    activerecord (3.2.12)
-      activemodel (= 3.2.12)
-      activesupport (= 3.2.12)
-      arel (~> 3.0.2)
-      tzinfo (~> 0.3.29)
-    activesupport (3.2.12)
-      i18n (~> 0.6)
-      multi_json (~> 1.0)
-    addressable (2.3.3)
-    aggregate (0.2.2)
-    arel (3.0.2)
-    async-rack (0.5.1)
-      rack (~> 1.1)
-    backports (2.6.7)
-    brock (0.1.5)
-    bson (1.8.3)
-    bson_ext (1.8.3)
-      bson (~> 1.8.3)
-    builder (3.0.4)
-    cookiejar (0.3.0)
-    descendants_tracker (0.0.1)
-    em-http-request (1.0.3)
-      addressable (>= 2.2.3)
-      cookiejar
-      em-socksify
-      eventmachine (>= 1.0.0.beta.4)
-      http_parser.rb (>= 0.5.3)
-    em-pg (0.1.2)
-      eventmachine (>= 0.12)
-      pg (>= 0.14)
-    em-socksify (0.2.1)
-      eventmachine (>= 1.0.0.beta.4)
-    em-synchrony (1.0.3)
-      eventmachine (>= 1.0.0.beta.1)
-    em-websocket (0.5.0)
-      eventmachine (>= 0.12.9)
-      http_parser.rb (~> 0.5.3)
-    eventmachine (1.0.3)
-    faraday (0.8.6)
-      multipart-post (~> 1.1)
-    fold-core (0.0.4)
-      activerecord (~> 3.2)
-      activesupport (~> 3.2)
-      brock
-      friendly_id
-      paranoia
-      state_machine
-      uniquify
-    friendly_id (4.0.9)
-    goliath (1.0.1)
-      async-rack
-      em-synchrony (>= 1.0.0)
-      em-websocket
-      eventmachine (>= 1.0.0.beta.4)
-      http_parser.rb (= 0.5.3)
-      log4r
-      multi_json
-      rack (>= 1.2.2)
-      rack-contrib
-      rack-respond_to
-    grape (0.4.0)
-      activesupport
-      builder
-      hashie (>= 1.2.0)
-      multi_json (>= 1.3.2)
-      multi_xml (>= 0.5.2)
-      rack (>= 1.3.0)
-      rack-accept
-      rack-mount
-      virtus
-    hashie (2.0.2)
-    hiredis (0.4.5)
-    http_parser.rb (0.5.3)
-    i18n (0.6.4)
-    librato-metrics (1.0.3)
-      aggregate (~> 0.2.2)
-      faraday (~> 0.7)
-      multi_json
-    librato-rack (0.1.0)
-      librato-metrics (~> 1.0.2)
-    log4r (1.1.10)
-    mongo (1.8.3)
-      bson (~> 1.8.3)
-    multi_json (1.7.0)
-    multi_xml (0.5.3)
-    multipart-post (1.2.0)
-    paranoia (1.2.0)
-      activerecord (>= 3.0.0)
-    pg (0.14.1)
+    bacon (1.2.0)
+    pg (0.15.0)
+    puma (1.6.3)
+      rack (~> 1.2)
     rack (1.5.2)
-    rack-accept (0.4.5)
-      rack (>= 0.4)
-    rack-accept-media-types (0.9)
-    rack-contrib (1.1.0)
-      rack (>= 0.9.1)
-    rack-cors (0.2.7)
+    rack-protection (1.5.0)
       rack
-    rack-mount (0.8.3)
-      rack (>= 1.0.0)
-    rack-respond_to (0.9.8)
-      rack-accept-media-types (>= 0.6)
-    redis (3.0.3)
-    state_machine (1.1.2)
-    sync-em-pg (0.0.1)
-      em-pg
-      em-synchrony
-      pg
-    tzinfo (0.3.37)
-    uniquify (0.1.0)
-    virtus (0.5.4)
-      backports (~> 2.6.1)
-      descendants_tracker (~> 0.0.1)
+    sequel (3.45.0)
+    sinatra (1.4.2)
+      rack (~> 1.5, >= 1.5.2)
+      rack-protection (~> 1.4)
+      tilt (~> 1.3, >= 1.3.4)
+    sinatra-sequel (0.9.0)
+      bacon
+      sequel (>= 3.2.0)
+      sinatra (>= 0.9.4)
+    tilt (1.3.5)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  bson_ext
-  em-http-request
-  em-synchrony
-  fold-core (= 0.0.4)
-  goliath
-  grape
-  hiredis
-  librato-rack
-  mongo
-  rack (= 1.5.2)
-  rack-contrib
-  rack-cors
-  redis
-  sync-em-pg
+  pg
+  puma
+  rack
+  sequel
+  sinatra
+  sinatra-sequel

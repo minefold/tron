@@ -1,16 +1,24 @@
-$LOAD_PATH.unshift(File.expand_path('../lib', __FILE__))
+require 'sinatra/base'
+require 'sinatra/sequel'
 
-require 'bundler/setup'
-require 'goliath'
-require 'grape'
+DB = Sequel.connect(ENV['DATABASE_URL'],
+       encoding: 'utf-8',
+       max_connections: 10
+     )
 
-require 'tron'
+require 'controllers/regions_controller'
+require 'controllers/servers_controller'
 
-$stdout.sync = true
-
-class Application < Goliath::API
-  def response(env)
-    Tron::API.call(env)
+class App < Sinatra::Base
+  configure do
+    set :database, DB
   end
-end
 
+  use ServersController
+  use RegionsController
+
+  get '/' do
+    'hello'
+  end
+
+end
