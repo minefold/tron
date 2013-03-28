@@ -8,6 +8,8 @@ class ServerSerializer < Serializer
 
     o[:name] = object.name
 
+    o[:state] = object.state_name
+
     if object.owner
       o[:owner] = object.owner_id.to_s
     end
