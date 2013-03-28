@@ -13,6 +13,11 @@ class Server < Sequel::Model
   many_to_one :account
   many_to_one :funpack
   many_to_one :owner, class: Player
+  many_to_one :snapshot
+
+  one_to_many :sessions
+
+  one_to_one( :session) {|ds| ds.where(stopped: nil) }
 
   state_machine(:initial => :down) do
     States.each {|name, value| state(name, value: value) }

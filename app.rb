@@ -1,19 +1,30 @@
 require 'sinatra/base'
 require 'sinatra/sequel'
+require 'logger'
 
-DB = Sequel.connect(ENV['DATABASE_URL'],
+class App < Sinatra::Base
+
+  def self.db
+    @db ||= Sequel.connect(ENV['DATABASE_URL'],
        encoding: 'utf-8',
        max_connections: 10
      )
-
-require 'controllers/regions_controller'
-require 'controllers/servers_controller'
-
-class App < Sinatra::Base
-  configure do
-    set :database, DB
   end
 
+  configure :development do
+    db.loggers << Logger.new(STDOUT)
+
+    Sequel::Model.unrestrict_primary_key
+    Sequel::Model.plugin :timestamps, :update_on_create => true,
+                                      :create => :created,
+                                      :update => :updated
+
+    require 'models'
+    require 'serializers'
+    require 'controllers'
+  end
+
+  use SessionsController
   use ServersController
   use RegionsController
 

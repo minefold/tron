@@ -1,8 +1,3 @@
-require 'sinatra/base'
-require 'models/region'
-require 'serializers/region_serializer'
-require 'serializers/list_serializer'
-
 class RegionsController < Sinatra::Base
 
   get '/regions' do
