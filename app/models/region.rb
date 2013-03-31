@@ -1,13 +1,8 @@
-class Region
-  attr_reader :id
-  attr_reader :created
-  attr_reader :lat
-  attr_reader :lng
+class Region < Sequel::Model
 
-  def initialize(params)
-    @id = params.fetch(:id)
-    @created = params.fetch(:created)
-    @lat = params.fetch(:lat)
-    @lng = params.fetch(:lng)
+  def validate
+    validates_presence [:id, :name]
+    validates_unique :id, :name
   end
+
 end

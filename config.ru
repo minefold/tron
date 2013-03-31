@@ -1,3 +1,3 @@
 require 'bundler/setup'
 require './app'
-run App
+run Sinatra::Application

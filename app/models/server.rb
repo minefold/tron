@@ -13,6 +13,7 @@ class Server < Sequel::Model
 
   many_to_one :account
   many_to_one :funpack
+  many_to_one :region
   many_to_one :owner, class: Player
   many_to_one :snapshot
 
@@ -23,8 +24,14 @@ class Server < Sequel::Model
   state_machine(:initial => :down) do
     States.each {|name, value| state(name, value: value) }
 
-    event(:start) { transition([:down, :up] => :up) }
-    event(:stop) { transition([:up, :down] => :down) }
+    event(:start) { transition(any => :starting) }
+    event(:started) { transition(any => :up)}
+    event(:stop) { transition(any => :down) }
+  end
+
+  def validate
+    validates_presence [:id, :account, :funpack, :region]
+    validates_unique :id
   end
 
 end

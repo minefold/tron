@@ -1,40 +1,41 @@
-require 'sinatra/base'
+require 'sinatra'
 require 'sinatra/sequel'
+require 'sinatra/param'
+require 'bugsnag'
 require 'logger'
 
-class App < Sinatra::Base
+DB ||= Sequel.connect(ENV['DATABASE_URL'],
+  encoding: 'utf-8',
+  max_connections: 10
+)
 
-  def self.db
-    @db ||= Sequel.connect(ENV['DATABASE_URL'],
-       encoding: 'utf-8',
-       max_connections: 10
-     )
-  end
-
-  configure :development do
-    db.loggers << Logger.new(STDOUT)
-  end
-
-  configure do
-    # TODO Replace with something a little less noisy
-    db.loggers << Logger.new(STDOUT)
-
-    Sequel::Model.unrestrict_primary_key
-    Sequel::Model.plugin :timestamps, :update_on_create => true,
-                                      :create => :created,
-                                      :update => :updated
-
-    require 'models'
-    require 'serializers'
-    require 'controllers'
-  end
-
-  use SessionsController
-  use ServersController
-  use RegionsController
-
-  get '/' do
-    'hello'
-  end
-
+configure :development do
+  DB.logger = Logger.new(STDOUT)
+  DB.log_warn_duration = 0
 end
+
+configure :production do
+  Bugsnag.configure do |config|
+    config.api_key = ENV['BUGSNAG_API_KEY']
+  end
+
+  use Bugsnag::Rack
+
+  enable :raise_errors
+end
+
+configure do
+  Sequel::Model.unrestrict_primary_key
+  Sequel::Model.plugin :validation_helpers
+  Sequel::Model.plugin :timestamps, :update_on_create => true,
+                                    :create => :created,
+                                    :update => :updated
+end
+
+require 'models'
+require 'serializers'
+require 'controllers'
+
+use SessionsController
+use ServersController
+use RegionsController

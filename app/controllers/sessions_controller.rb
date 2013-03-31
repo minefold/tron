@@ -1,68 +1,96 @@
+require 'controller'
 require 'securerandom'
 
-class SessionsController < Sinatra::Base
-
-  helpers do
-    def json(obj)
-      content_type :json
-      obj.to_json
-    end
-    def see_other(resource)
-      halt 303, {'Location' => resource}
-    end
-    def no_content
-      halt 204
-    end
-  end
-
-  get '/sessions/:id' do
-    session = Session[params[:id]]
-    json SessionSerializer.new(session)
-  end
+class SessionsController < Controller
 
   post '/servers/:id/session' do
-    server = Server[params[:id]]
+    authenticate!
+    param :id, String, required: true, is: ID_PATTERN, :coerce => :downcase
 
-    if server.session
-      see_other(request.url)
+    server = Server.where(id: params[:id], account: account).first
+
+    if server.nil?
+      halt 404
     end
 
-    session = Session.create(
+    # The session can't be started twice so direct clients instead to get the current session.
+    if server.session
+      halt 303, 'Location' => request.url
+    end
+
+    session = Session.new(
       id: SecureRandom.uuid,
       server: server
     )
 
-    server.start!
+    DB.transaction do
+      session.save
+      server.start!
+    end
+
+    # wait for it to become playable
+
+    server.started!
 
     json SessionSerializer.new(session)
   end
 
   get '/servers/:id/session' do
-    server = Server[params[:id]]
+    authenticate!
+    param :id, String, required: true, is: ID_PATTERN, :coerce => :downcase
+
+    server = Server.where(id: params[:id], account: account).first
+
+    if server.nil?
+      halt 404
+    end
+
     session = server.session
 
     if session.nil?
-      not_found
-    else
-      json SessionSerializer.new(session)
+      halt 404
     end
+
+    json SessionSerializer.new(session)
+  end
+
+  get '/sessions/:id' do
+    authenticate!
+    param :id, String, required: true, is: ID_PATTERN, :coerce => :downcase
+
+    # TODO Check that this session belongs to a server from the account.
+    session = Session[params[:id]]
+
+    if session.nil?
+      halt 404
+    end
+
+    json SessionSerializer.new(session)
   end
 
   delete '/servers/:id/session' do
-    server = Server[params[:id]]
+    authenticate!
+    param :id, String, required: true, is: ID_PATTERN, :coerce => :downcase
+
+    server = Server.where(id: params[:id], account: account).first
+
+    if server.nil?
+      halt 404
+    end
+
     session = server.session
 
     if session.nil?
-      not_found
+      halt 404
     end
 
-    App.db.transaction do
+    DB.transaction do
       session.stopped = Time.now
       session.save
       server.stop!
     end
 
-    no_content
+    halt 204
   end
 
 

@@ -31,14 +31,19 @@ Sequel.migration do
       index :username
     end
 
+    create_table :regions do
+      primary_key :id, :type => :uuid
+      String :name, null: false
+    end
+
     create_table :servers do
       primary_key :id, :type => :uuid
       foreign_key :account_id, :accounts, :type => :uuid, null: false
       foreign_key :funpack_id, :funpacks, :type => :uuid, null: false
+      foreign_key :region_id, :regions, :type => :uuid, null: false
       foreign_key :owner_id, :players, :type => :uuid, null: true
 
       Integer :state, null: false
-      String  :region, null: false
 
       String  :name, null: true
 
