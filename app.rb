@@ -37,6 +37,7 @@ require 'models'
 require 'serializers'
 require 'controllers'
 
+use PlayersController
 use SessionsController
 use ServersController
 use RegionsController

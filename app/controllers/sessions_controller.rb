@@ -32,6 +32,7 @@ class SessionsController < Controller
 
     server.started!
 
+    status 201
     json SessionSerializer.new(session)
   end
 

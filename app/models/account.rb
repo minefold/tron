@@ -6,6 +6,7 @@ class Account < Sequel::Model
 
   one_to_many :funpacks
   one_to_many :servers
+  one_to_many :players
 
   def self.generate_api_key
     # Length is 4/3 the size of the resulting string, obviously!

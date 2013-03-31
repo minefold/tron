@@ -1,4 +1,5 @@
 require 'serializer'
+require 'serializers/player_session_serializer'
 
 class SessionSerializer < Serializer
 
@@ -11,6 +12,10 @@ class SessionSerializer < Serializer
     o[:stopped] = object.stopped
 
     o[:server] = object.server_id.to_s
+
+    o[:players] = object.player_sessions.map do |session|
+      PlayerSessionSerializer.new(session)
+    end
 
     if object.started?
       o[:ip] = object.ip.to_s

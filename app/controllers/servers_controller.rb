@@ -22,6 +22,7 @@ class ServersController < Controller
     end
 
     server.save
+    status 201
     json ServerSerializer.new(server)
   end
 
