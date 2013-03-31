@@ -16,6 +16,9 @@ class App < Sinatra::Base
   end
 
   configure do
+    # TODO Replace with something a little less noisy
+    db.loggers << Logger.new(STDOUT)
+
     Sequel::Model.unrestrict_primary_key
     Sequel::Model.plugin :timestamps, :update_on_create => true,
                                       :create => :created,
