@@ -50,7 +50,7 @@ Sequel.migration do
       primary_key :id, :type => :uuid
       foreign_key :server_id, :servers, :type => :uuid, null: false
 
-      String   :args, text: true, default: ''
+      String   :payload, text: true
 
       DateTime :created, null: false
       DateTime :updated, null: false
