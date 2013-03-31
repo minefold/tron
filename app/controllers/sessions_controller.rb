@@ -7,6 +7,12 @@ class SessionsController < Sinatra::Base
       content_type :json
       obj.to_json
     end
+    def see_other(resource)
+      halt 303, {'Location' => resource}
+    end
+    def no_content
+      halt 204
+    end
   end
 
   get '/sessions/:id' do
@@ -17,16 +23,44 @@ class SessionsController < Sinatra::Base
   post '/servers/:id/session' do
     server = Server[params[:id]]
 
-    session = Session.new(
+    if server.session
+      see_other(request.url)
+    end
+
+    session = Session.create(
       id: SecureRandom.uuid,
       server: server
     )
 
-    App.db.transaction do
-      session.save
-      server.start!
-      # Send request to backend to start the server
-    end
+    subscription = Redis.new
+    subscription.subscription("servers:requests:start:#{server.id}") do |on|
+      on.subscribe do
+        payload = {
+          server_id: server.id,
+          funpack_id: server.funpack.id,
+          reply_key: server.id,
+          data:
+        }
+        App.redis.lpush("servers:requests:start", {
+
+        }
+
+        )
+      end
+
+      on.message do |chan, raw|
+
+      end
+
+    # App.redis.lpush "servers:requests:start",
+    # {
+    #   server_id: server.party_cloud_id,
+    #   funpack_id: server.funpack.party_cloud_id,
+    #   reply_key:  server.party_cloud_id,
+    #   data: server.attributes_for_party_cloud.to_json
+    # }.to_json
+
+    server.start!
 
     json SessionSerializer.new(session)
   end
@@ -35,16 +69,20 @@ class SessionsController < Sinatra::Base
     server = Server[params[:id]]
     session = server.session
 
-    not_found if session.nil?
-
-    json SessionSerializer.new(session)
+    if session.nil?
+      not_found
+    else
+      json SessionSerializer.new(session)
+    end
   end
 
   delete '/servers/:id/session' do
     server = Server[params[:id]]
     session = server.session
 
-    not_found if session.nil?
+    if session.nil?
+      not_found
+    end
 
     App.db.transaction do
       session.stopped = Time.now
@@ -52,7 +90,7 @@ class SessionsController < Sinatra::Base
       server.stop!
     end
 
-    204
+    no_content
   end
 
 

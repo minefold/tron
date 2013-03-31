@@ -15,7 +15,7 @@ class ServersController < Sinatra::Base
   end
 
   post '/servers' do
-    server = Server.new(
+    server = Server.create(
       id: SecureRandom.uuid,
       account: Account.first,
       funpack: Funpack.first,
@@ -25,8 +25,6 @@ class ServersController < Sinatra::Base
       created: Time.now,
       updated: Time.now
     )
-
-    server.save
 
     json ServerSerializer.new(server)
   end
