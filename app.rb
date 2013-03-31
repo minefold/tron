@@ -37,6 +37,7 @@ require 'models'
 require 'serializers'
 require 'controllers'
 
+use FunpacksController
 use PlayersController
 use SessionsController
 use ServersController

@@ -1,3 +1,4 @@
+require 'serializers/funpack_serializer'
 require 'serializers/list_serializer'
 require 'serializers/player_serializer'
 require 'serializers/player_session_serializer'
