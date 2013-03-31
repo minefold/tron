@@ -25,6 +25,7 @@ configure :production do
 end
 
 configure do
+  Sequel.default_timezone = :utc
   Sequel::Model.unrestrict_primary_key
   Sequel::Model.plugin :validation_helpers
   Sequel::Model.plugin :timestamps, :update_on_create => true,
