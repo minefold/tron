@@ -6,8 +6,9 @@ class Server < Sequel::Model
 
   States = {
     down: 0,
-    up: 1,
-    crashed: 2
+    starting: 1,
+    up: 2,
+    crashed: 3
   }
 
   many_to_one :account
