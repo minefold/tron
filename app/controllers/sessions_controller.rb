@@ -32,34 +32,6 @@ class SessionsController < Sinatra::Base
       server: server
     )
 
-    subscription = Redis.new
-    subscription.subscription("servers:requests:start:#{server.id}") do |on|
-      on.subscribe do
-        payload = {
-          server_id: server.id,
-          funpack_id: server.funpack.id,
-          reply_key: server.id,
-          data:
-        }
-        App.redis.lpush("servers:requests:start", {
-
-        }
-
-        )
-      end
-
-      on.message do |chan, raw|
-
-      end
-
-    # App.redis.lpush "servers:requests:start",
-    # {
-    #   server_id: server.party_cloud_id,
-    #   funpack_id: server.funpack.party_cloud_id,
-    #   reply_key:  server.party_cloud_id,
-    #   data: server.attributes_for_party_cloud.to_json
-    # }.to_json
-
     server.start!
 
     json SessionSerializer.new(session)
