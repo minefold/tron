@@ -21,7 +21,9 @@ class ServersController < Controller
       halt 422, server.errors
     end
 
+    # TODO Rescue save failure
     server.save
+
     status 201
     json ServerSerializer.new(server)
   end

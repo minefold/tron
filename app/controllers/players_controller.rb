@@ -21,7 +21,9 @@ class PlayersController < Controller
       halt 422, player.errors
     end
 
+    # TODO Rescue save failure
     player.save
+
     status 201
     json PlayerSerializer.new(player)
   end
@@ -62,6 +64,7 @@ class PlayersController < Controller
       halt 422, player.errors
     end
 
+    # TODO Rescue save failure
     player.save
 
     json PlayerSerializer.new(player)

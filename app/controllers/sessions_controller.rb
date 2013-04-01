@@ -23,6 +23,7 @@ class SessionsController < Controller
       server: server
     )
 
+    # TODO Rescue transaction failure
     DB.transaction do
       session.save
       server.start!
@@ -85,6 +86,7 @@ class SessionsController < Controller
       halt 404
     end
 
+    # TODO Rescue transaction failure
     DB.transaction do
       session.stopped = Time.now
       session.save
