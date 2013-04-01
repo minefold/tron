@@ -9,21 +9,6 @@ DB ||= Sequel.connect(ENV['DATABASE_URL'],
   max_connections: 10
 )
 
-configure :development do
-  DB.logger = Logger.new(STDOUT)
-  DB.log_warn_duration = 0
-end
-
-configure :production do
-  Bugsnag.configure do |config|
-    config.api_key = ENV['BUGSNAG_API_KEY']
-  end
-
-  use Bugsnag::Rack
-
-  enable :raise_errors
-end
-
 configure do
   Sequel.default_timezone = :utc
   Sequel::Model.unrestrict_primary_key
@@ -31,6 +16,21 @@ configure do
   Sequel::Model.plugin :timestamps, :update_on_create => true,
                                     :create => :created,
                                     :update => :updated
+end
+
+configure :development do
+  DB.logger = Logger.new(STDOUT)
+end
+
+configure :production do
+  Bugsnag.configure do |config|
+    config.api_key = ENV['BUGSNAG_API_KEY']
+  end
+
+  enable :raise_errors
+
+  use Bugsnag::Rack
+  use Librato::Rack
 end
 
 require 'models'

@@ -12,4 +12,5 @@ gem 'state_machine'
 
 group :production do
   gem 'bugsnag'
+  gem 'librato-rack'
 end
