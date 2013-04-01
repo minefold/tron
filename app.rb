@@ -1,9 +1,6 @@
 require 'sinatra'
 require 'sinatra/sequel'
 require 'sinatra/param'
-require 'rack/ssl'
-require 'bugsnag'
-require 'logger'
 
 DB ||= Sequel.connect(ENV['DATABASE_URL'],
   encoding: 'utf-8',
@@ -20,10 +17,15 @@ configure do
 end
 
 configure :development do
+  require 'logger'
   DB.logger = Logger.new(STDOUT)
 end
 
 configure :production do
+  require 'bugsnag'
+  require 'librato/rack'
+  require 'rack/ssl'
+
   Bugsnag.configure do |config|
     config.api_key = ENV['BUGSNAG_API_KEY']
   end
@@ -32,6 +34,7 @@ configure :production do
 
   use Bugsnag::Rack
   use Librato::Rack
+  use Rack::SSL
 end
 
 require 'models'
