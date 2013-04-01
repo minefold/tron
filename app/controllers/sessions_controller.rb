@@ -14,27 +14,42 @@ class SessionsController < Controller
     end
 
     # The session can't be started twice so direct clients instead to get the current session.
-    if server.session
-      halt 303, 'Location' => request.url
+    if server.up?
+      headers['Location'] = request.url
+      halt 303
     end
 
-    session = Session.new(
-      id: SecureRandom.uuid,
-      server: server
-    )
+    if server.starting?
+      session = server.session
+    else
+      session = Session.new(id: SecureRandom.uuid, server: server)
 
-    # TODO Rescue transaction failure
-    DB.transaction do
-      session.save
-      server.start!
+      # TODO Rescue transaction failure
+      DB.transaction do
+        session.save
+        server.start!
+      end
     end
 
-    # wait for it to become playable
+    # Wait for the session become playable
+    REDIS.with do |redis|
+      redis.subscribe("sessions:started:#{session.id}") do |on|
+        on.subscribe do |channel, subscriptions|
+          # Send request to backend, must be able to handle multiple requests to the same server.
+          puts "Listening " + channel
+        end
 
-    server.started!
+        on.message { redis.unsubscribe }
 
-    status 201
-    json SessionSerializer.new(session)
+        on.unsubscribe do |channel, subscriptions|
+          session.reload
+
+          status 201
+          content_type :json
+          return SessionSerializer.new(session).to_json
+        end
+      end
+    end
   end
 
   get '/servers/:id/session' do

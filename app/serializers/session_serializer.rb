@@ -19,7 +19,7 @@ class SessionSerializer < Serializer
 
     if object.started?
       o[:ip] = object.ip.to_s
-      o[:ip] = object.port.to_s
+      o[:ip] = object.port.to_i
     end
 
     o

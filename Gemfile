@@ -10,6 +10,9 @@ gem 'sequel'
 gem 'sinatra-sequel'
 gem 'sinatra-param'
 gem 'state_machine'
+gem 'redis'
+gem 'hiredis'
+gem 'connection_pool'
 
 group :production do
   gem 'bugsnag'

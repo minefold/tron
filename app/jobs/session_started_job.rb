@@ -5,6 +5,13 @@ class SessionStartedJob
   # ip
   # port
 
+  def initialize(session_id, ts, ip, port)
+    @session_id = session_id
+    @ts = ts
+    @ip = ip
+    @port = port
+  end
+
   def work
     @session = Session[@session_id]
     @time = DateTime.rfc3339(@ts)
@@ -19,7 +26,7 @@ class SessionStartedJob
       @session.server.started!
     end
 
-    # TODO Publish to web
+    Redis.new.publish("sessions:started:#{@session.id}", 'ok')
   end
 
 end

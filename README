@@ -1,0 +1,3 @@
+# Tron
+
+NB. Redis connection pool size must be >= than the max number of threads specified in the Procfile.

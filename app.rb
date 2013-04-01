@@ -1,11 +1,17 @@
 require 'sinatra'
 require 'sinatra/sequel'
 require 'sinatra/param'
+require 'redis'
+require 'connection_pool'
 
-DB ||= Sequel.connect(ENV['DATABASE_URL'],
+DB = Sequel.connect(ENV['DATABASE_URL'],
   encoding: 'utf-8',
   max_connections: 10
 )
+
+REDIS = ConnectionPool.new(size: 16, timeout: 5) do
+  Redis.new(:driver => :hiredis)
+end
 
 configure do
   Sequel.default_timezone = :utc
@@ -18,7 +24,7 @@ end
 
 configure :development do
   require 'logger'
-  DB.logger = Logger.new(STDOUT)
+  # DB.logger = Logger.new(STDOUT)
 end
 
 configure :production do
@@ -46,3 +52,8 @@ use PlayersController
 use SessionsController
 use ServersController
 use RegionsController
+
+get '/' do
+  content_type :text
+  'Hello, World.'
+end
