@@ -1,6 +1,7 @@
 require 'sinatra'
 require 'sinatra/sequel'
 require 'sinatra/param'
+require 'rack/ssl'
 require 'bugsnag'
 require 'logger'
 
