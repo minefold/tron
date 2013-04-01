@@ -7,4 +7,8 @@ class Funpack < Sequel::Model
     validates_unique :id, :name
   end
 
+  def server_count
+    Server.where(funpack: self).count
+  end
+
 end
