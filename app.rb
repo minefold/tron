@@ -4,23 +4,19 @@ require 'sinatra/param'
 require 'redis'
 require 'connection_pool'
 require 'resque'
+require 'mongo'
 
 STDOUT.sync = true
 
 
-# Initiate connections to outside services.
-# NB. These can to be accessed from multiple threads.
-
-DB = Sequel.connect(ENV['DATABASE_URL'],
-  encoding: 'utf-8',
-  max_connections: 10
-)
-
-REDIS = ConnectionPool.new(size: 16, timeout: 5) do
-  Redis.new(:driver => :hiredis)
-end
+# Postgres
 
 configure do
+  DB = Sequel.connect(ENV['DATABASE_URL'],
+    encoding: 'utf-8',
+    max_connections: 10
+  )
+
   Sequel.default_timezone = :utc
   Sequel::Model.unrestrict_primary_key
   Sequel::Model.plugin :validation_helpers
@@ -29,18 +25,25 @@ configure do
                                     :update => :updated
 end
 
+
+# Redis
+
 configure do
+  REDIS = ConnectionPool.new(size: 16, timeout: 5) do
+    Redis.new(:driver => :hiredis)
+  end
+
   # Opens a persistant Redis connection for Resque
   Resque.redis = Redis.new(:driver => :hiredis)
 end
 
 
-# Legacy configuration
+# Legacy Mongo
 
 configure do
-  Bundler.setup(:legacy)
-  require 'mongo'
-  set :mongo, Mongo::MongoReplicaSetClient.new
+  set :mongo, Mongo::MongoClient.from_uri(ENV['MONGODB_URI'],
+    pool_size: 16
+  )
 end
 
 
