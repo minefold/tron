@@ -83,3 +83,8 @@ get '/' do
   content_type :text
   'Hello, World.'
 end
+
+get '/ping' do
+  content_type :text
+  'pong'
+end
