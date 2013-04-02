@@ -3,6 +3,7 @@ require 'sinatra/sequel'
 require 'sinatra/param'
 require 'redis'
 require 'connection_pool'
+require 'resque'
 
 STDOUT.sync = true
 
@@ -15,7 +16,7 @@ DB = Sequel.connect(ENV['DATABASE_URL'],
 )
 
 REDIS = ConnectionPool.new(size: 16, timeout: 5) do
-  Redis.new(:url => ENV['REDIS_URL'], :driver => :hiredis)
+  Redis.new(:driver => :hiredis)
 end
 
 configure do
@@ -25,6 +26,11 @@ configure do
   Sequel::Model.plugin :timestamps, :update_on_create => true,
                                     :create => :created,
                                     :update => :updated
+end
+
+configure do
+  # Opens a persistant Redis connection for Resque
+  Resque.redis = Redis.new(:driver => :hiredis)
 end
 
 # Configure production, logging errors and security.
