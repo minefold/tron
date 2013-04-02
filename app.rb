@@ -15,7 +15,7 @@ DB = Sequel.connect(ENV['DATABASE_URL'],
 )
 
 REDIS = ConnectionPool.new(size: 16, timeout: 5) do
-  Redis.new(:driver => :hiredis)
+  Redis.new(:url => ENV['REDIS_URL'], :driver => :hiredis)
 end
 
 configure do
