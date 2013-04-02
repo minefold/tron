@@ -1,7 +1,11 @@
-class SessionStoppedJob
+require 'job'
 
-  # session_id
-  # ts
+class SessionStoppedJob < Job
+
+  def initialize(session_id, ts)
+    @session_id = session_id
+    @ts = ts
+  end
 
   def work
     @session = Session[@session_id]

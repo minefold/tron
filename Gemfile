@@ -14,6 +14,11 @@ gem 'redis'
 gem 'hiredis'
 gem 'connection_pool'
 
+group :worker do
+  gem 'resque'
+  gem 'rake'
+end
+
 group :production do
   gem 'bugsnag'
   gem 'librato-rack'

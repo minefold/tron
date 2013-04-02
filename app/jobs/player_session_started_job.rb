@@ -1,12 +1,19 @@
 require 'securerandom'
 
-class PlayerSessionStartedJob
+require 'job'
+require 'models/session'
+require 'models/player'
+require 'models/player_session'
 
-  # session_id
-  # ts
-  # distinct_id
-  # username
-  # email
+class PlayerSessionStartedJob < Job
+
+  def initialize(session_id, ts, distinct_id, username, email)
+    @session_id = session_id
+    @ts = ts
+    @distinct_id = distinct_id
+    @username = username
+    @email = email
+  end
 
   def work
     @session = Session[@session_id]

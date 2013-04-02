@@ -4,6 +4,11 @@ require 'sinatra/param'
 require 'redis'
 require 'connection_pool'
 
+STDOUT.sync = true
+
+# Initiate connections to outside services.
+# NB. These can to be accessed from multiple threads.
+
 DB = Sequel.connect(ENV['DATABASE_URL'],
   encoding: 'utf-8',
   max_connections: 10
@@ -22,10 +27,7 @@ configure do
                                     :update => :updated
 end
 
-configure :development do
-  require 'logger'
-  # DB.logger = Logger.new(STDOUT)
-end
+# Configure production, logging errors and security.
 
 configure :production do
   require 'bugsnag'
@@ -43,9 +45,12 @@ configure :production do
   use Rack::SSL
 end
 
+# Initialize application code
+
 require 'models'
 require 'serializers'
 require 'controllers'
+require 'jobs'
 
 use FunpacksController
 use PlayersController

@@ -1,9 +1,14 @@
 require 'securerandom'
 
-class PlayerSessionStoppedJob
+require 'job'
+require 'models/player_session'
 
-  # player_session_id
-  # ts
+class PlayerSessionStoppedJob < Job
+
+  def initialize(player_session_id, ts)
+    @player_session_id = player_session_id
+    @ts = ts
+  end
 
   def work
     @player_session = PlayerSession[@player_session_id]

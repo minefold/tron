@@ -1,9 +1,7 @@
-class SessionStartedJob
+require 'job'
+require 'models/session'
 
-  # session_id
-  # ts
-  # ip
-  # port
+class SessionStartedJob < Job
 
   def initialize(session_id, ts, ip, port)
     @session_id = session_id
