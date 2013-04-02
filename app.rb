@@ -86,5 +86,5 @@ end
 
 get '/ping' do
   content_type :text
-  'pong'
+  "pong\n"
 end
