@@ -14,6 +14,11 @@ gem 'redis'
 gem 'hiredis'
 gem 'connection_pool'
 
+group :legacy do
+  gem 'bson_ext'
+  gem 'mongo'
+end
+
 group :worker do
   gem 'resque'
   gem 'rake'
