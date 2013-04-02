@@ -37,28 +37,10 @@ end
 
 # Legacy configuration
 
-Bundler.setup(:legacy)
-require 'mongo'
-
 configure do
-  set :mongo, begin
-    uri = ENV['MONGO_URL'] || 'mongodb://localhost/tron_development'
-    mongo = ::Mongo::Connection.from_uri(uri)
-
-    if mongo.is_a? ::Mongo::MongoReplicaSetClient
-      # this should be in the damn ruby driver
-      mongo_uri = ::Mongo::URIParser.new(uri)
-      auth = mongo_uri.auths.first
-
-      db = mongo[auth['db_name']]
-      db.authenticate auth['username'], auth['password']
-      db
-    else
-      db_name = mongo.auths.any? ? mongo.auths.first['db_name'] : nil
-      db_name ||= URI.parse(uri).path[1..-1]
-      mongo[db_name]
-    end
-  end
+  Bundler.setup(:legacy)
+  require 'mongo'
+  set :mongo, Mongo::MongoReplicaSetClient.new
 end
 
 
