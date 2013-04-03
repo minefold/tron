@@ -31,7 +31,7 @@ class ServersController < Controller
 
     # Legacy
     MONGO['production']['servers'].insert({
-      '_id' => BSON::ObjectId.new(server.legacy_id),
+      '_id' => legacy_id,
       'created_at' => server.created,
       'updated_at' => server.updated
     })
