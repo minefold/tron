@@ -17,7 +17,7 @@ class ServersController < Controller
       funpack: Funpack.where(id: params[:funpack], account: account).first,
       region: Region[params[:region]],
       name: params[:name],
-      legacy_id: legacy_id
+      legacy_id: legacy_id.to_s
     )
 
     if not server.valid?
@@ -29,7 +29,7 @@ class ServersController < Controller
 
     # Legacy
     MONGO['production']['servers'].insert({
-      '_id' => server.legacy_id,
+      '_id' => BSON::ObjectId.new(server.legacy_id),
       'created_at' => server.created,
       'updated_at' => server.updated
     })
