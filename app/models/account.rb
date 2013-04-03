@@ -15,12 +15,11 @@ class Account < Sequel::Model
 
   def self.find_from_auth(auth)
     # Legacy hack for deploy. Please remove.
-    api_key = if auth.username == 'minefold'
-      "31K4xqnzlrhEfIVwgfBrRW2ViT2T65tF"
+    if auth.username == 'minefold'
+      where(email: 'admin@minefold.com')
     else
-      auth.username
-    end
-    where(api_key: api_key).first
+      where(api_key: auth.username)
+    end.first
   end
 
   def before_validation

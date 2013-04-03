@@ -9,12 +9,15 @@ class ServersController < Controller
     param :region, String, required: true, is: ID_PATTERN, :coerce => :downcase
     param :name, String
 
+    legacy_id = BSON::ObjectId.new
+
     server = Server.new(
       id: SecureRandom.uuid,
       account: account,
       funpack: Funpack.where(id: params[:funpack], account: account).first,
       region: Region[params[:region]],
-      name: params[:name]
+      name: params[:name],
+      legacy_id: legacy_id
     )
 
     if not server.valid?
@@ -23,6 +26,13 @@ class ServersController < Controller
 
     # TODO Rescue save failure
     server.save
+
+    # Legacy
+    MONGO['production']['servers'].insert({
+      '_id' => server.legacy_id,
+      'created_at' => server.created,
+      'updated_at' => server.updated
+    })
 
     status 201
     json ServerSerializer.new(server)

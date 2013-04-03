@@ -4,6 +4,7 @@ class ServerSerializer < Serializer
 
   def payload
     o = super
+    o[:legacy_id] = object.legacy_id
 
     o[:name] = object.name
 

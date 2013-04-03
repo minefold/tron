@@ -41,7 +41,7 @@ end
 # Legacy Mongo
 
 configure do
-  set :mongo, Mongo::MongoClient.from_uri(ENV['MONGODB_URI'],
+  MONGO = Mongo::MongoClient.from_uri(ENV['MONGODB_URI'],
     pool_size: 16
   )
 end
