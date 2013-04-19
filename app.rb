@@ -37,6 +37,12 @@ configure do
   Resque.redis = Redis.new(:driver => :hiredis)
 end
 
+configure do
+  BRAIN = ConnectionPool.new(size: 16, timeout: 5) do
+    Redis.new(url: ENV['BRAIN_URL'], :driver => :hiredis)
+  end
+end 
+
 
 # Legacy Mongo
 

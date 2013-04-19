@@ -5,3 +5,24 @@ NB. Redis connection pool size must be >= than the max number of threads specifi
 # Init
 
 $ psql -c "drop database tron_development;"; psql -c "create database tron_development" && sequel -m db/migrations postgres://localhost/tron_development && foreman run ruby db/seeds.rb
+
+# Example Usage
+
+curl http://localhost:6000/servers \
+    -u ZJuPqeia7rRY5yMF9HsTYooX0VvmuhEk:
+    
+curl http://localhost:6000/regions \
+    -u ZJuPqeia7rRY5yMF9HsTYooX0VvmuhEk:
+
+curl http://localhost:6000/funpacks \
+    -u ZJuPqeia7rRY5yMF9HsTYooX0VvmuhEk:
+
+curl http://localhost:6000/servers \
+    -u ZJuPqeia7rRY5yMF9HsTYooX0VvmuhEk: \
+    -d name=minebnb \
+    -d region=71519ec0-1515-42b9-b2f6-a24c151a6247 \
+    -d funpack=9ed10c25-60ed-4375-8170-29f9365216a0
+    
+curl http://localhost:6000/servers/11802871-bb53-4658-a55c-22f5bcc247b2/session \
+    -u ZJuPqeia7rRY5yMF9HsTYooX0VvmuhEk: \
+    -X POST
