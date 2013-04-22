@@ -1,20 +1,28 @@
 require "sequel"
 require "securerandom"
 
-# connect to an in-memory database
 DB = Sequel.connect(ENV['DATABASE_URL'])
 
-account_id = 'dd19ed91-9d97-4ece-80d3-afd45f196002'
-api_key = 'ZJuPqeia7rRY5yMF9HsTYooX0VvmuhEk'
+# Accounts
+
+account_id = SecureRandom.uuid
 
 DB[:accounts].insert(
-  id: account_id, 
-  api_key: api_key,
-  email: 'dev@example.com',
-  created: Time.now, 
+  id: account_id,
+  api_key: 'apikey',
+  email: 'minefold@example.com',
+  created: Time.now,
   updated: Time.now
 )
 
+# Regions
+
+DB[:regions].insert(
+  id: SecureRandom.uuid,
+  name: 'us-east-1',
+)
+
+# Existing funpacks
 
 {
   'minecraft'                 => '9ed10c25-60ed-4375-8170-29f9365216a0',
@@ -32,10 +40,3 @@ DB[:accounts].insert(
     updated: Time.now
   )
 end
-
-DB[:regions].insert(
-  id: '71519ec0-1515-42b9-b2f6-a24c151a6247',
-  name: 'us-east-1',
-)
-
-puts "Dev key: #{api_key}"

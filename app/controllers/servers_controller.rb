@@ -11,8 +11,6 @@ class ServersController < Controller
 
     legacy_id = BSON::ObjectId.new
 
-    p params
-
     server = Server.new(
       id: SecureRandom.uuid,
       account: account,

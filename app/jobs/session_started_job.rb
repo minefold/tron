@@ -1,13 +1,13 @@
-require 'job'
-require 'models/session'
+class SessionStartedJob
+  include Sidekiq::Worker
 
-class SessionStartedJob < Job
-
-  def initialize(session_id, ts, ip, port)
+  def perform(session_id, ts, ip, port)
     @session_id = session_id
     @ts = ts
     @ip = ip
     @port = port
+
+    work
   end
 
   def work

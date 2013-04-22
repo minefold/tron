@@ -1,37 +1,42 @@
 # Tron
 
+Tron is the PartyCloud HTTP API.
+
 NB. Redis connection pool size must be >= than the max number of threads
 specified in the Procfile.
 
-# Init
+## Setup
 
     $ createdb "tron_development" --encoding=utf-8
     $ sequel --migrate-directory db/migrations \
       postgres://localhost/tron_development
     $ foreman run ruby db/seeds.rb
 
-# Example Usage
+## Example Usage
 
-curl -i http://localhost:6000/servers \
-    -u $PC_API_KEY
-    
-curl -i http://localhost:6000/regions \
-    -u $PC_API_KEY
+    # Get the list of servers
+    curl -i http://localhost:6000/servers -u $PC_API_KEY:
 
-curl -i http://localhost:6000/funpacks \
-    -u $PC_API_KEY
+    # Get the list of regions
+    curl -i http://localhost:6000/regions -u $PC_API_KEY:
 
-curl -i http://localhost:6000/servers \
-    -u $PC_API_KEY \
-    -d name=minebnb \
-    -d region=71519ec0-1515-42b9-b2f6-a24c151a6247 \
-    -d funpack=9ed10c25-60ed-4375-8170-29f9365216a0
-    
-curl -i http://localhost:6000/servers/$SERVER/session \
-    -u $PC_API_KEY \
-    -X POST \
-    -d '{ "name": "Woodbury", "access": { "blacklist": []}, "settings": {}}'
-    
-curl -i http://localhost:6000/servers/$SERVER/session \
-    -u $PC_API_KEY \
-    -X DELETE
+    # Get the list of funpacks
+    curl -i http://localhost:6000/funpacks -u $PC_API_KEY:
+
+    # Create a new server
+    curl -i http://localhost:6000/servers \
+        -u $PC_API_KEY \
+        -d name=minebnb \
+        -d region=71519ec0-1515-42b9-b2f6-a24c151a6247 \
+        -d funpack=9ed10c25-60ed-4375-8170-29f9365216a0
+
+    # Start a session of that server
+    curl -i http://localhost:6000/servers/{SERVER_ID}/session \
+        -u $PC_API_KEY \
+        -X POST \
+        -d '{ "name": "Woodbury", "access": { "blacklist": []}, "settings": {}}'
+
+    # Stop a session of that server
+    curl -i http://localhost:6000/servers/$SERVER/session \
+        -u $PC_API_KEY \
+        -X DELETE

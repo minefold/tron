@@ -1,13 +1,13 @@
 require 'securerandom'
 
-require 'job'
-require 'models/player_session'
+class PlayerSessionStoppedJob
+  include Sidekiq::Worker
 
-class PlayerSessionStoppedJob < Job
-
-  def initialize(player_session_id, ts)
+  def perform(player_session_id, ts)
     @player_session_id = player_session_id
     @ts = ts
+
+    work
   end
 
   def work
@@ -15,7 +15,6 @@ class PlayerSessionStoppedJob < Job
     @time = DateTime.rfc3339(@ts)
 
     @player_session.stopped = @time
-
 
     # TODO Rescue save failure
     @player_session.save

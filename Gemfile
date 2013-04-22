@@ -19,8 +19,7 @@ gem 'bson_ext'
 gem 'mongo'
 
 group :worker do
-  gem 'resque'
-  gem 'rake'
+  gem 'sidekiq'
 end
 
 group :production do

@@ -3,7 +3,7 @@ require 'sinatra/sequel'
 require 'sinatra/param'
 require 'redis'
 require 'connection_pool'
-require 'resque'
+require 'sidekiq'
 require 'mongo'
 
 STDOUT.sync = true
@@ -34,14 +34,14 @@ configure do
   end
 
   # Opens a persistant Redis connection for Resque
-  Resque.redis = Redis.new(:driver => :hiredis)
+  # Resque.redis = Redis.new(:driver => :hiredis)
 end
 
 configure do
   BRAIN = ConnectionPool.new(size: 16, timeout: 5) do
     Redis.new(url: ENV['BRAIN_URL'], :driver => :hiredis)
   end
-end 
+end
 
 
 # Legacy Mongo

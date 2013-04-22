@@ -1,11 +1,11 @@
-require 'job'
+class SessionStoppedJob
+  include Sidekiq::Worker
 
-class SessionStoppedJob < Job
-  @queue = :high
-
-  def initialize(session_id, ts)
+  def perform(session_id, ts)
     @session_id = session_id
     @ts = ts
+
+    work
   end
 
   def work
