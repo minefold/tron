@@ -10,4 +10,12 @@ class Session < Sequel::Model
     not started.nil?
   end
 
+  def stopped?
+    not stopped.nil?
+  end
+
+  def crashed?
+    stopped? and exit_status != 0
+  end
+
 end

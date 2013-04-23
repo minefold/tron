@@ -27,6 +27,7 @@ class Server < Sequel::Model
     event(:start) { transition(any => :starting) }
     event(:started) { transition(any => :up)}
     event(:stop) { transition(any => :down) }
+    event(:crashed) { transition(any => :crashed) }
   end
 
   def validate

@@ -56,18 +56,34 @@ class SessionsController < Controller
         on.message do |channel, msg|
           # TODO Catch JSON parse error
           reply = JSON.parse(msg)
+
+          p reply
           
-          session.ip = reply['ip']
-          session.port = reply['port']
-          session.started = Time.at(reply['at'].to_i)
+          case 
+          when reply['state'] == 'started'
+            session.ip = reply['ip']
+            session.port = reply['port']
+            session.started = Time.at(reply['at'].to_i)
           
-          # TODO Catch transaction error
-          DB.transaction do
-            session.save
-            server.started!
+            # TODO Catch transaction error
+            DB.transaction do
+              session.save
+              server.started!
+            end
+          
+            redis.unsubscribe
+          when reply['failed']
+            session.stopped = Time.now
+            session.exit_status = 1
+            
+            # TODO Catch transaction error
+            DB.transaction do
+              session.save
+              server.crashed!
+            end
+          
+            redis.unsubscribe
           end
-          
-          redis.unsubscribe
         end
 
         on.unsubscribe do |channel, subscriptions|

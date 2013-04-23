@@ -21,7 +21,11 @@ class SessionSerializer < Serializer
       o[:ip] = object.ip.to_s
       o[:port] = object.port.to_i
     end
-
+    
+    if object.stopped?
+      o[:exit_status] = object.exit_status
+    end
+    
     o
   end
 
