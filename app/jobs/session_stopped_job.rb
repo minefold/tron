@@ -1,6 +1,7 @@
 require 'job'
 
 class SessionStoppedJob < Job
+  @queue = :high
 
   def initialize(session_id, ts)
     @session_id = session_id
@@ -9,14 +10,14 @@ class SessionStoppedJob < Job
 
   def work
     @session = Session[@session_id]
-    @time = DateTime.rfc3339(@ts)
+    @time = Time.at(@ts)
 
     @session.stopped = @time
 
     # TODO Rescue transaction failure
     DB.transaction do
       @session.save
-      @session.server.stopped!
+      @session.server.stop!
     end
   end
 

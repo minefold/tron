@@ -1,8 +1,9 @@
 require 'controller'
 require 'securerandom'
+require 'brain'
 
 class SessionsController < Controller
-
+  
   post '/servers/:id/session' do
     authenticate!
     param :id, String, required: true, is: ID_PATTERN, :coerce => :downcase
@@ -33,67 +34,40 @@ class SessionsController < Controller
       session
     end
     
-    # handle start failure
+    result = Brain.new.start_server(
+      server_id: server.legacy_id,
+      funpack_id: server.funpack.legacy_id,
+      reply_key: server.legacy_id,
+      data: session.payload
+    )
     
-    # Push start job
-    BRAIN.with do |redis|
-      redis.lpush "servers:requests:start", JSON.dump(
-        server_id: server.legacy_id,
-        funpack_id: server.funpack.legacy_id,
-        reply_key: server.legacy_id,
-        data: session.payload
-      )
-    end
-
-    # Wait for the session become playable
-    BRAIN.with do |redis|
-      redis.subscribe("servers:requests:start:#{server.legacy_id}") do |on|
-        on.subscribe do |channel, subscriptions|
-          # Send request to backend, must be able to handle multiple requests to the same server.
-          puts "Listening " + channel
-        end
-
-        on.message do |channel, msg|
-          # TODO Catch JSON parse error
-          reply = JSON.parse(msg)
-
-          p reply
-          
-          case 
-          when reply['state'] == 'started'
-            session.ip = reply['ip']
-            session.port = reply['port']
-            session.started = Time.at(reply['at'].to_i)
-          
-            # TODO Catch transaction error
-            DB.transaction do
-              session.save
-              server.started!
-            end
-          
-            redis.unsubscribe
-          when reply['failed']
-            session.stopped = Time.now
-            session.exit_status = 1
-            
-            # TODO Catch transaction error
-            DB.transaction do
-              session.save
-              server.crashed!
-            end
-          
-            redis.unsubscribe
-          end
-        end
-
-        on.unsubscribe do |channel, subscriptions|
-          # session.reload
-          status 201
-          content_type :json
-          return SessionSerializer.new(session).to_json
-        end
+    puts "result:#{result.inspect}"
+    
+    if result.success?
+      session.ip = result[:ip]
+      session.port = result[:port]
+      session.started = Time.at(result[:at].to_i)
+      
+      # TODO Catch transaction error
+      DB.transaction do
+        session.save
+        server.started!
       end
+    else
+
+      session.stopped = Time.now
+      session.exit_status = 1
+      
+      # TODO Catch transaction error
+      DB.transaction do
+        session.save
+        server.crashed!
+      end      
     end
+    
+    status 201
+    content_type :json
+    SessionSerializer.new(session).to_json
   end
 
   get '/servers/:id/session' do
@@ -144,6 +118,8 @@ class SessionsController < Controller
     if session.nil?
       halt 404
     end
+    
+    Brain.new.stop_server(server.legacy_id)
 
     # TODO Rescue transaction failure
     DB.transaction do
