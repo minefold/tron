@@ -28,6 +28,7 @@ class Account < Sequel::Model
   end
 
   def validate
+    super
     validates_presence [:id, :email, :api_key]
     validates_unique :id, :email, :api_key
     validates_max_length API_KEY_LENGTH, :api_key

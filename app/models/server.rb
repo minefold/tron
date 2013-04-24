@@ -31,6 +31,7 @@ class Server < Sequel::Model
   end
 
   def validate
+    super
     validates_presence [:id, :account, :funpack, :region]
     validates_unique :id
   end
