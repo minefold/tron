@@ -10,6 +10,7 @@ class Player < Sequel::Model
     :distinct => true
 
   def validate
+    super
     validates_presence [:id, :account]
     validates_unique :id
   end

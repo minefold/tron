@@ -3,6 +3,7 @@ class Funpack < Sequel::Model
   one_to_many :servers
 
   def validate
+    super
     validates_presence [:id, :account, :name]
     validates_unique :id, :name
   end
@@ -10,7 +11,7 @@ class Funpack < Sequel::Model
   def server_count
     Server.where(funpack: self).count
   end
-  
+
   def legacy_id
     {
       # minecraft
