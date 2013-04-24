@@ -1,10 +1,14 @@
 # Tron
 
-NB. Redis connection pool size must be >= than the max number of threads specified in the Procfile.
+NB. Redis connection pool size must be >= than the max number of threads
+specified in the Procfile.
 
 # Init
 
-$ psql -c "drop database tron_development;"; psql -c "create database tron_development" && sequel -m db/migrations postgres://localhost/tron_development && foreman run ruby db/seeds.rb
+    $ createdb "tron_development" --encoding=utf-8
+    $ sequel --migrate-directory db/migrations \
+      postgres://localhost/tron_development
+    $ foreman run ruby db/seeds.rb
 
 # Example Usage
 
