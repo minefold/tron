@@ -8,15 +8,10 @@ class Brain
     
     # Wait for the session become playable
     BRAIN.with do |redis|
-      redis.subscribe("servers:requests:start:#{options[:server_id]}") do |on|
+      redis.subscribe("sessions:started:#{options[:session_id]}") do |on|
         on.message do |channel, msg|
-          # TODO Catch JSON parse error
-          reply = JSON.parse(msg, symbolize_names: true)
-          p reply
-          if reply[:state] == 'started' || reply[:failed]
-            redis.unsubscribe
-            return StartResult.new(reply)
-          end
+          redis.unsubscribe
+          return msg == 'ok'
         end
       end
     end
@@ -37,16 +32,6 @@ class Brain
         end
       end
     end
-  end
-end
-
-class StartResult < Hash
-  def initialize(hash)
-    self.merge!(hash)
-  end
-  
-  def success?
-    !has_key?('failed')
   end
 end
 

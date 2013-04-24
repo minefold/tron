@@ -10,7 +10,7 @@ class SessionStoppedJob
 
   def work
     @session = Session[@session_id]
-    @time = Time.at(@ts)
+    @time = DateTime.rfc3339(@ts)
 
     @session.stopped = @time
 

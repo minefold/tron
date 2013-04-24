@@ -34,27 +34,22 @@ class SessionsController < Controller
       session
     end
     
-    result = Brain.new.start_server(
+    succeeded = Brain.new.start_server(
+      session_id: session.id,
       server_id: server.legacy_id,
       funpack_id: server.funpack.legacy_id,
       reply_key: server.legacy_id,
       data: session.payload
     )
     
-    puts "result:#{result.inspect}"
+    session.reload
     
-    if result.success?
-      session.ip = result[:ip]
-      session.port = result[:port]
-      session.started = Time.at(result[:at].to_i)
-      
-      # TODO Catch transaction error
-      DB.transaction do
-        session.save
-        server.started!
-      end
+    if succeeded
+      # reply good
     else
-
+      # reply bad
+      
+      # TODO move to SessionCrashedJob
       session.stopped = Time.now
       session.exit_status = 1
       
