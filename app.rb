@@ -32,10 +32,9 @@ configure do
   REDIS = ConnectionPool.new(size: 16, timeout: 5) do
     Redis.new(:driver => :hiredis)
   end
-
-  # Opens a persistant Redis connection for Resque
-  # Resque.redis = Redis.new(:driver => :hiredis)
 end
+
+# Brain Redis
 
 configure do
   BRAIN = ConnectionPool.new(size: 16, timeout: 5) do
