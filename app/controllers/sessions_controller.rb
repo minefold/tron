@@ -19,6 +19,10 @@ class SessionsController < Controller
       headers['Location'] = request.url
       halt 303
     end
+    
+    if account.server_limit_remaining < 1
+      halt 400
+    end
 
     session = if server.starting?
       server.session
@@ -52,6 +56,7 @@ class SessionsController < Controller
     
     status 201
     content_type :json
+
     SessionSerializer.new(session).to_json
   end
 
