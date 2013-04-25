@@ -24,8 +24,6 @@ class SessionStartedJob
       @session.server.started!
     end
     
-    puts "publishing sessions:started:#{@session.id}"
-
     Redis.new.publish("sessions:started:#{@session.id}", 'ok')
   end
 

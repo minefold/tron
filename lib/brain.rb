@@ -8,35 +8,32 @@ class Brain
     
     # Wait for the session become playable
     BRAIN.with do |redis|
-      redis.subscribe("sessions:started:#{options[:session_id]}") do |on|
+      redis.subscribe(
+          "sessions:started:#{options[:session_id]}", 
+          "sessions:stopped:#{options[:session_id]}") do |on|
         on.message do |channel, msg|
           redis.unsubscribe
-          return msg == 'ok'
+          
+          return channel =~ /stopped/ ? 'crashed' : 'ok'
         end
       end
     end
   end
   
-  def stop_server(server_id)
+  def stop_server(options)
     # Push stop job
     BRAIN.with do |redis|
-      redis.lpush "servers:requests:stop", server_id
+      redis.lpush "servers:requests:stop", options[:server_id]
     end
     
     # Wait for stop
     BRAIN.with do |redis|
-      redis.subscribe("servers:requests:stop:#{server_id}") do |on|
-        on.message do |channel, msg|
+      redis.subscribe("sessions:stopped:#{options[:session_id]}") do |on|
+        on.message do |channel, exit_status|
           redis.unsubscribe
-          return StopResult.new
+          return exit_status.to_i
         end
       end
     end
-  end
-end
-
-class StopResult < Hash
-  def success?
-    true
   end
 end

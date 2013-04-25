@@ -8,5 +8,4 @@ class LegacySessionStartedJob
       end
     end
   end
-
 end

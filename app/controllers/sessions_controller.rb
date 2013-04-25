@@ -48,16 +48,6 @@ class SessionsController < Controller
       # reply good
     else
       # reply bad
-      
-      # TODO move to SessionCrashedJob
-      session.stopped = Time.now
-      session.exit_status = 1
-      
-      # TODO Catch transaction error
-      DB.transaction do
-        session.save
-        server.crashed!
-      end      
     end
     
     status 201
@@ -114,17 +104,14 @@ class SessionsController < Controller
       halt 404
     end
     
-    Brain.new.stop_server(server.legacy_id)
-
-    # TODO Rescue transaction failure
-    DB.transaction do
-      session.stopped = Time.now
-      session.save
-      server.stop!
-    end
-
-    halt 204
+    Brain.new.stop_server(
+      session_id: session.id,
+      server_id: server.legacy_id,
+    )
+    session.reload
+        
+    status 201
+    content_type :json
+    SessionSerializer.new(session).to_json
   end
-
-
 end
