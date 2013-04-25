@@ -23,6 +23,7 @@ class PlayerSessionStartedJob
     if @player.nil?
       @player = Player.new(
         id: SecureRandom.uuid,
+        account_id: @session.server.account.id,
         distinct_id: @distinct_id,
         username: @username,
         email: @email

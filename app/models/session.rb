@@ -5,6 +5,8 @@ class Session < Sequel::Model
   many_to_many :players,
     :join_table => :player_sessions,
     :distinct => true
+    
+  one_to_one( :session) {|ds| ds.where(stopped: nil) }
 
   def started?
     not started.nil?
