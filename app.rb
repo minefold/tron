@@ -85,6 +85,10 @@ use SessionsController
 use ServersController
 use RegionsController
 
+before do
+  headers['Access-Control-Allow-Origin'] = 'manage.partycloud.com'
+end
+
 get '/' do
   content_type :text
   'Hello, World.'
