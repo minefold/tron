@@ -3,13 +3,13 @@ require 'securerandom'
 require 'brain'
 
 class SessionsController < Controller
-  
+
   post '/servers/:id/session' do
     authenticate!
     param :id, String, required: true, is: ID_PATTERN, :coerce => :downcase
 
     server = Server.where(id: params[:id], account: account).first
-    
+
     if server.nil?
       halt 404
     end
@@ -19,7 +19,7 @@ class SessionsController < Controller
       headers['Location'] = request.url
       halt 303
     end
-    
+
     if account.server_limit_remaining < 1
       halt 400
     end
@@ -34,30 +34,48 @@ class SessionsController < Controller
         session.save
         server.start!
       end
-      
+
       session
     end
-    
-    succeeded = Brain.new.start_server(
-      session_id: session.id,
-      server_id: server.legacy_id,
-      funpack_id: server.funpack.legacy_id,
-      reply_key: server.legacy_id,
-      data: session.payload
-    )
-    
-    session.reload
-    
-    if succeeded
-      # reply good
-    else
-      # reply bad
-    end
-    
+
     status 201
     content_type :json
 
-    SessionSerializer.new(session).to_json
+    stream do |out|
+      timer = nil
+      EM.next_tick do
+        timer = EM.add_periodic_timer(15) {
+          begin
+            out.print ' '
+            out.flush
+          rescue IOError
+            timer.cancel
+          end
+        }
+      end
+
+      succeeded = Brain.new(BRAIN).start_server(
+        session_id: session.id,
+        server_id: server.legacy_id,
+        funpack_id: server.funpack.legacy_id,
+        reply_key: server.legacy_id,
+        data: session.payload
+      )
+
+      session.reload
+
+      if succeeded
+        # reply good
+      else
+        # reply bad
+      end
+      timer.cancel
+      begin
+        out << SessionSerializer.new(session).to_json
+      rescue IOError
+        # client is gone, no need to write response
+      end
+    end
   end
 
   get '/servers/:id/session' do
@@ -108,13 +126,13 @@ class SessionsController < Controller
     if session.nil?
       halt 404
     end
-    
-    Brain.new.stop_server(
+
+    Brain.new(BRAIN).stop_server(
       session_id: session.id,
       server_id: server.legacy_id,
     )
     session.reload
-        
+
     status 201
     content_type :json
     SessionSerializer.new(session).to_json

@@ -1,4 +1,5 @@
 require 'sinatra/base'
+require 'sinatra/streaming'
 require 'rack/auth/basic'
 
 # AbstractController class. It's a leaky abstraction, really this is just shared code that I want in all the controlllers.
@@ -7,6 +8,7 @@ class Controller < Sinatra::Base
   ID_PATTERN = /[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/
 
   helpers Sinatra::Param
+  helpers Sinatra::Streaming
 
   helpers do
     attr_reader :account
@@ -38,7 +40,7 @@ class Controller < Sinatra::Base
       obj.to_json
     end
   end
-  
+
   after do
     if account = session[:account]
       headers['X-ServerLimit-Limit'] = account.server_limit.to_s
