@@ -26,6 +26,7 @@ specified in the Procfile.
     # Create a new server
     curl -i http://localhost:6000/servers \
         -u $PC_API_KEY \
+        -X POST \
         -d name=minebnb \
         -d region=71519ec0-1515-42b9-b2f6-a24c151a6247 \
         -d funpack=9ed10c25-60ed-4375-8170-29f9365216a0

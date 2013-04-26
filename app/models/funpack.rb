@@ -25,7 +25,10 @@ class Funpack < Sequel::Model
       # feed-the-beast-direwolf20
       '512159a67aae57bf17000005' => '2f203313-cc51-4ae2-88b5-9d35620d8ef2',
       # tekkit-lite
-      '5126be367aae5712a4000007' => 'a3ef2208-65df-4bc0-934c-e80e1bd7914f'
+      '5126be367aae5712a4000007' => 'a3ef2208-65df-4bc0-934c-e80e1bd7914f',
+
+      # minecraft-mojang
+      '5179c548fc99860002000001' => '162c669c-857b-4072-bf76-267f05ae8b6a',
     }.invert.fetch(id)
   end
 
