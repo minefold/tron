@@ -23,7 +23,7 @@ class SessionStartedJob
       @session.save
       @session.server.started!
     end
-    
+
     Redis.new.publish("sessions:started:#{@session.id}", 'ok')
   end
 

@@ -6,7 +6,7 @@ class Brain
   end
 
   def subscriber
-    @subscriber ||= Redis.new(url: ENV['BRAIN_URL'], :driver => :hiredis)
+    @subscriber ||= Redis.new(:driver => :hiredis)
   end
 
   def start_server(options={})
