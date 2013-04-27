@@ -42,16 +42,16 @@ class SessionsController < Controller
     content_type :json
 
     stream do |out|
-      timer = nil
-      EM.next_tick do
-        timer = EM.add_periodic_timer(15) {
+      killkeepalive = Queue.new
+      keepalive = Thread.new(out) do |out|
+        while killkeepalive.empty?
+          sleep 1
           begin
-            out.print ' '
-            out.flush
+            out << ' '
           rescue IOError
-            timer.cancel
+            killkeepalive.push(true)
           end
-        }
+        end
       end
 
       succeeded = Brain.new(BRAIN).start_server(
@@ -69,7 +69,9 @@ class SessionsController < Controller
       else
         # reply bad
       end
-      timer.cancel
+
+      killkeepalive.push(true)
+
       begin
         out << SessionSerializer.new(session).to_json
       rescue IOError

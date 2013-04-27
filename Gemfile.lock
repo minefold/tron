@@ -14,7 +14,6 @@ GEM
       facter (>= 1.6.12)
       timers (>= 1.0.0)
     connection_pool (1.0.0)
-    daemons (1.1.9)
     eventmachine (1.0.3)
     facter (1.7.0)
     faraday (0.8.7)
@@ -36,6 +35,8 @@ GEM
     multi_xml (0.5.3)
     multipart-post (1.2.0)
     pg (0.15.1)
+    puma (2.0.0.b7)
+      rack (>= 1.1, < 2.0)
     rack (1.5.2)
     rack-protection (1.5.0)
       rack
@@ -78,10 +79,6 @@ GEM
       tilt (~> 1.3.3)
     state_machine (1.2.0)
     temple (0.6.3)
-    thin (1.5.1)
-      daemons (>= 1.0.9)
-      eventmachine (>= 0.12.6)
-      rack (>= 1.0.0)
     tilt (1.3.7)
     timers (1.1.0)
 
@@ -96,6 +93,7 @@ DEPENDENCIES
   librato-rack
   mongo
   pg
+  puma (= 2.0.0.b7)
   rack
   rack-ssl
   redis
@@ -106,4 +104,3 @@ DEPENDENCIES
   sinatra-param
   sinatra-sequel
   state_machine
-  thin
