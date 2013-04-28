@@ -81,6 +81,7 @@ use SessionsController
 use ServersController
 use RegionsController
 
+# CORS
 before do
   if request.request_method == 'OPTIONS'
     response.headers["Access-Control-Allow-Origin"]  = "*"
