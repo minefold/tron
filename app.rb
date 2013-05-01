@@ -59,7 +59,10 @@ configure :production do
     config.use_ssl = true
     config.release_stage = "production"
     config.notify_release_stages = ["production"]
+    config.logger.level = Logger::INFO
   end
+
+  enable :sessions
 
   use Bugsnag::Rack
   use Librato::Rack
