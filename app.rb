@@ -58,9 +58,12 @@ configure :production do
 
   Bugsnag.configure do |config|
     config.api_key = ENV['BUGSNAG_API_KEY']
-    config.use_ssl = true
+    config.project_root = settings.root
     config.logger.level = Logger::INFO
   end
+
+  enable :sessions
+  enable :raise_errors
 
   use Bugsnag::Rack
   use Librato::Rack
