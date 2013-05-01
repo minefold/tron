@@ -4,6 +4,7 @@ GEM
     aggregate (0.2.2)
     backports (3.3.0)
     bacon (1.2.0)
+    bcrypt-ruby (3.0.1)
     bson (1.8.5)
     bson_ext (1.8.5)
       bson (~> 1.8.5)
@@ -86,6 +87,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bcrypt-ruby
   bson_ext
   bugsnag
   connection_pool

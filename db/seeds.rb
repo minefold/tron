@@ -1,5 +1,6 @@
-require "sequel"
-require "securerandom"
+require 'sequel'
+require 'securerandom'
+require 'bcrypt'
 
 DB = Sequel.connect(ENV['DATABASE_URL'])
 
@@ -42,3 +43,14 @@ DB[:regions].insert(
     updated: Time.now
   )
 end
+
+# Users
+
+DB[:users].insert(
+  id: SecureRandom.uuid,
+  account_id: account_id,
+  email: 'user@example.com',
+  encrypted_password: BCrypt::Password.create('password'),
+  created: Time.now,
+  updated: Time.now
+)

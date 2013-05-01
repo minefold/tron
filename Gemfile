@@ -14,6 +14,7 @@ gem 'state_machine'
 gem 'redis'
 gem 'hiredis'
 gem 'connection_pool'
+gem 'bcrypt-ruby'
 
 # Legacy
 gem 'bson_ext'
