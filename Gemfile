@@ -16,6 +16,9 @@ gem 'hiredis'
 gem 'connection_pool'
 gem 'bcrypt-ruby'
 
+#
+gem 'rack-protection', github: 'rkh/rack-protection'
+
 # Legacy
 gem 'bson_ext'
 gem 'mongo'
