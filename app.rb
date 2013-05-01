@@ -57,10 +57,7 @@ configure :production do
 
   Bugsnag.configure do |config|
     config.api_key = ENV['BUGSNAG_API_KEY']
-    config.project_root = settings.root
   end
-
-  enable :raise_errors
 
   use Bugsnag::Rack
   use Librato::Rack
@@ -100,4 +97,8 @@ end
 get '/ping' do
   content_type :text
   "pong\n"
+end
+
+get '/crash' do
+  raise 'unsupported'
 end
