@@ -8,7 +8,6 @@ require 'mongo'
 
 STDOUT.sync = true
 
-
 # Postgres
 
 configure do
@@ -57,6 +56,9 @@ configure :production do
 
   Bugsnag.configure do |config|
     config.api_key = ENV['BUGSNAG_API_KEY']
+    config.use_ssl = true
+    config.release_stage = "production"
+    config.notify_release_stages = ["production"]
   end
 
   use Bugsnag::Rack
