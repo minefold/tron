@@ -1,3 +1,5 @@
+puts ENV['RACK_ENV']
+
 require 'sinatra'
 require 'sinatra/sequel'
 require 'sinatra/param'
@@ -48,7 +50,6 @@ end
 
 
 # Configure production, logging errors and security.
-
 configure :production do
   require 'bugsnag'
   require 'librato/rack'
@@ -57,18 +58,12 @@ configure :production do
   Bugsnag.configure do |config|
     config.api_key = ENV['BUGSNAG_API_KEY']
     config.use_ssl = true
-    config.release_stage = "production"
-    config.notify_release_stages = ["production"]
-    config.logger.level = Logger::INFO
   end
-
-  enable :sessions
 
   use Bugsnag::Rack
   use Librato::Rack
   use Rack::SSL
 end
-
 
 # Initialize application code
 
