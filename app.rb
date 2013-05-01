@@ -50,6 +50,7 @@ end
 
 
 # Configure production, logging errors and security.
+puts "#{ENV['RACK_ENV']} mode"
 configure :production do
   require 'bugsnag'
   require 'librato/rack'
@@ -58,6 +59,7 @@ configure :production do
   Bugsnag.configure do |config|
     config.api_key = ENV['BUGSNAG_API_KEY']
     config.use_ssl = true
+    config.logger.level = Logger::INFO
   end
 
   use Bugsnag::Rack
