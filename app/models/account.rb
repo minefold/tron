@@ -34,6 +34,10 @@ class Account < Sequel::Model
     validates_max_length API_KEY_LENGTH, :api_key
   end
 
+  def server_count
+    servers_dataset.count
+  end
+
   def up_servers
     servers_dataset.where(state: Server::States[:up])
     # servers_dataset.where(:state == Server::States[:up])
