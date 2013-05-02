@@ -80,8 +80,8 @@ use RegionsController
 # CORS
 before do
   if request.request_method == 'OPTIONS'
-    response.headers["Access-Control-Allow-Origin"]  = "*"
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE"
+    response.headers["Access-Control-Allow-Origin"]  = "https://manage.partycloud.com"
+    response.headers["Access-Control-Allow-Methods"] = "GET,POST,PUT,DELETE"
     response.headers["Access-Control-Allow-Headers"] = "Authorization"
 
     halt 200
