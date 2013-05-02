@@ -16,7 +16,7 @@ configure do
     max_connections: 10
   )
 
-  DB.sql_log_level = :debug
+  # DB.sql_log_level = :debug
   DB.logger = Logger.new($stdout)
 
   Sequel.default_timezone = :utc

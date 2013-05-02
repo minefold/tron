@@ -2,7 +2,6 @@ require 'controller'
 require 'securerandom'
 
 class ServersController < Controller
-
   post '/servers' do
     authenticate!
     param :funpack, String, required: true, is: ID_PATTERN, :coerce => :downcase
@@ -54,9 +53,16 @@ class ServersController < Controller
   get '/servers' do
     authenticate!
 
-    json ListSerializer.new(account.servers.map {|s|
+    json PaginatedListSerializer.new(account.server_count, limit, offset, account.servers_dataset.limit(limit, offset).map {|s|
       ServerSerializer.new(s)
     })
   end
 
+  def limit
+    [[params[:limit].to_i, 100].min, 1].max
+  end
+
+  def offset
+    [params[:offset].to_i, 0].max
+  end
 end
