@@ -55,7 +55,6 @@ configure :production do
     config.logger.level = Logger::INFO
   end
 
-  enable :sessions
   enable :raise_errors
 
   use Bugsnag::Rack
