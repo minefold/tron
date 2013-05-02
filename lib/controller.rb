@@ -42,6 +42,10 @@ class Controller < Sinatra::Base
   end
 
   after do
+    headers["Access-Control-Allow-Origin"]  = "*"
+    headers["Access-Control-Allow-Methods"] = "GET,POST,PUT,DELETE"
+    headers["Access-Control-Allow-Headers"] = "Authorization"
+
     if account = session[:account]
       headers['X-ServerLimit-Limit'] = account.server_limit.to_s
       headers['X-ServerLimit-Remaining'] = account.server_limit_remaining.to_s
