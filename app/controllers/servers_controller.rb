@@ -54,7 +54,7 @@ class ServersController < Controller
     authenticate!
 
     # this is NOT eager loading. Fucker.
-    servers = Server.eager(:funpack).where(account: account).limit(limit, offset)
+    servers = Server.eager(:funpack).where(account: account).limit(limit, offset).reverse_order(:created)
     json PaginatedListSerializer.new(account.server_count, limit, offset, servers.map {|s|
       ServerSerializer.new(s)
     })
