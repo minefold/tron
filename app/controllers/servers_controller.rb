@@ -53,13 +53,15 @@ class ServersController < Controller
   get '/servers' do
     authenticate!
 
-    json PaginatedListSerializer.new(account.server_count, limit, offset, account.servers_dataset.limit(limit, offset).map {|s|
+    # this is NOT eager loading. Fucker.
+    servers = Server.eager(:funpack).where(account: account).limit(limit, offset)
+    json PaginatedListSerializer.new(account.server_count, limit, offset, servers.map {|s|
       ServerSerializer.new(s)
     })
   end
 
   def limit
-    [[params[:limit].to_i, 100].min, 1].max
+    [[(params[:limit] || 100).to_i, 100].min, 1].max
   end
 
   def offset

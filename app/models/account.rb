@@ -5,7 +5,7 @@ class Account < Sequel::Model
   API_KEY_LENGTH = 32
 
   one_to_many :funpacks
-  one_to_many :servers
+  one_to_many :servers, :eager => [:funpack]
   one_to_many :players
 
   def self.generate_api_key

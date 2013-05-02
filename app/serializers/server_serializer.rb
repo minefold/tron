@@ -11,10 +11,11 @@ class ServerSerializer < Serializer
     o[:state] = object.state_name.to_s
 
     if object.owner
-      o[:owner] = object.owner_id.to_s
+      o[:owner] = PlayerSerializer.new(object.owner)
     end
 
-    o[:funpack] = object.funpack_id.to_s
+    o[:funpack] = FunpackSerializer.new(object.funpack)
+    o[:region] = RegionSerializer.new(object.region)
 
     o[:created] = object.created
 
