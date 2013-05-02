@@ -1,3 +1,4 @@
+require 'serializers/account_serializer'
 require 'serializers/funpack_serializer'
 require 'serializers/list_serializer'
 require 'serializers/player_serializer'

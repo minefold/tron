@@ -1,3 +1,4 @@
+require 'controllers/account_controller'
 require 'controllers/funpacks_controller'
 require 'controllers/players_controller'
 require 'controllers/regions_controller'

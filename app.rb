@@ -1,5 +1,3 @@
-puts ENV['RACK_ENV']
-
 require 'sinatra'
 require 'sinatra/sequel'
 require 'sinatra/param'
@@ -28,29 +26,24 @@ end
 
 
 # Redis
-
 configure do
   REDIS = Redis.new(:driver => :hiredis)
 end
 
 # Brain Redis
-
 configure do
   BRAIN = Redis.new(url: ENV['BRAIN_URL'], :driver => :hiredis)
 end
 
 
 # Legacy Mongo
-
 configure do
   MONGO = Mongo::MongoClient.from_uri(ENV['MONGODB_URI'],
     pool_size: 16
   )
 end
 
-
 # Configure production, logging errors and security.
-puts "#{ENV['RACK_ENV']} mode"
 configure :production do
   require 'bugsnag'
   require 'librato/rack'
@@ -77,6 +70,7 @@ require 'serializers'
 require 'controllers'
 require 'jobs'
 
+use AccountController
 use FunpacksController
 use PlayersController
 use SessionsController

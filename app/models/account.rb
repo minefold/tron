@@ -7,7 +7,7 @@ class Account < Sequel::Model
   one_to_many :funpacks
   one_to_many :servers
   one_to_many :players
-  
+
   def self.generate_api_key
     # Length is 4/3 the size of the resulting string, obviously!
     SecureRandom.urlsafe_base64(API_KEY_LENGTH * 0.75)
@@ -33,18 +33,18 @@ class Account < Sequel::Model
     validates_unique :id, :email, :api_key
     validates_max_length API_KEY_LENGTH, :api_key
   end
-  
-  def running_servers
+
+  def up_servers
     servers_dataset.where(state: Server::States[:up])
     # servers_dataset.where(:state == Server::States[:up])
   end
-  
+
   def server_limit
     5
   end
-  
+
   def server_limit_remaining
-    server_limit - running_servers.count
+    server_limit - up_servers.count
   end
 
 end
