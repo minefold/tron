@@ -27,7 +27,7 @@ class ServersController < Controller
     server.save
 
     # Legacy
-    MONGO['production']['servers'].insert({
+    MONGO['servers'].insert({
       '_id' => legacy_id,
       'created_at' => server.created,
       'updated_at' => server.updated

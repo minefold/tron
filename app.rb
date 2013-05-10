@@ -41,9 +41,20 @@ end
 
 # Legacy Mongo
 configure do
-  MONGO = Mongo::MongoClient.from_uri(ENV['MONGODB_URI'],
-    pool_size: 16
-  )
+  MONGO = begin
+    extra_opts = { pool_size: 16 }
+    uri = ENV['MONGODB_URI']
+
+    parser = Mongo::URIParser.new(uri)
+
+    conn = parser.connection(extra_opts)
+    db = if auth = parser.auths.first
+      conn.add_auth(auth[:db_name], auth[:username], auth[:password])
+      conn[auth[:db_name]]
+    else
+      conn[uri.split('/').last]
+    end
+  end
 end
 
 # Configure production, logging errors and security.
