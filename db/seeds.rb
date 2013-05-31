@@ -11,7 +11,7 @@ account_id = SecureRandom.uuid
 DB[:accounts].insert(
   id: account_id,
   api_key: 'apikey',
-  email: 'minefold@example.com',
+  email: 'admin@minefold.com',
   created: Time.now,
   updated: Time.now
 )

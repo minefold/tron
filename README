@@ -7,9 +7,9 @@ specified in the Procfile.
 
 ## Setup
 
-    $ createdb partycloud --encoding=utf-8
+    $ createdb partycloud_development --encoding=utf-8
     $ sequel --migrate-directory db/migrations \
-      postgres://localhost/partycloud
+      postgres://localhost/partycloud_development
     $ foreman run ruby db/seeds.rb
 
 ## Example Usage
