@@ -1,19 +1,43 @@
 require 'aws-sdk'
 
 class Snapshots
-  def initialize(server_id)
-    @server_id = server_id
-  end
+  attr_reader :node, :server_id, :ts
 
-  def delete_all!
-    tree = s3.buckets[map_tiles_bucket].as_tree
-    tree.children.each do |child|
-      PlayerSessionStartedJob.perform_async session.id, ts, distinct_id, username, nil
-      TestMapWorker.perform_async(child.prefix)
+  def self.collect_from_aws(server_id)
+    snapshots = []
+    [
+      ['minefold-production', "worlds/#{server_id}"],
+      ['minefold-production', "world-backups/#{server_id}"],
+      ['minefold-production-worlds', server_id],
+      ['party-cloud-production', "worlds/#{server_id}"],
+      ['party-cloud-production', "world-backups/#{server_id}"],
+    ].each do |bucket, prefix|
+      s3.buckets[bucket].as_tree(prefix: prefix).children.each do |o|
+        ts = nil
+        if o.key =~ /\.(\d{10})\./
+          ts = Time.at($1.to_i)
+          puts "#{o.key} #{ts}"
+          snapshots << new(o.member, server_id, ts)
+        else
+          puts "WARN: no timestamp for #{o.key}. Ignoring file"
+        end
+      end
     end
+    snapshots.sort_by{|s| s.ts.to_i }
   end
 
-  def s3
+  def initialize(node, server_id, ts)
+    @node = node
+    @server_id = server_id
+    @ts = ts
+  end
+
+  def delete!
+    puts "DEL #{node.key} #{ts}"
+    node.delete
+  end
+
+  def self.s3
     @s3 ||= ::AWS::S3.new(
       access_key_id: ENV['AWS_ACCESS_KEY'],
       secret_access_key: ENV['AWS_SECRET_KEY']
