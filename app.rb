@@ -89,6 +89,7 @@ use PlayersController
 use SessionsController
 use ServersController
 use RegionsController
+use SnapshotsController
 
 # CORS
 before do
