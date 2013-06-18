@@ -15,6 +15,10 @@ gem 'redis'
 gem 'hiredis'
 gem 'connection_pool'
 gem 'bcrypt-ruby'
+gem 'aws-sdk', github: 'whatupdave/aws-sdk-ruby'
+
+gem 'sidekiq'
+gem 'slim' # required by sidekiq web
 
 #
 gem 'rack-protection', github: 'rkh/rack-protection'
@@ -23,9 +27,6 @@ gem 'rack-protection', github: 'rkh/rack-protection'
 gem 'bson_ext'
 gem 'mongo'
 
-group :worker do
-  gem 'sidekiq'
-end
 
 group :production do
   gem 'bugsnag'
