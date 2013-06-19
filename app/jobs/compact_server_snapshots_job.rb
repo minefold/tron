@@ -53,7 +53,7 @@ class CompactServerSnapshotsJob
     delete += snaps
 
     # keep 7 dailies
-    puts "KEEP #{keep.map(&:ts)}"
+    puts "#{legacy_server_id}: KEEP #{keep.map(&:ts)}"
     delete.each do |snap|
       snap.delete!
     end

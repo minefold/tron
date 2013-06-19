@@ -16,10 +16,10 @@ class Snapshots
         ts = nil
         if o.key =~ /\.(\d{10})\./
           ts = Time.at($1.to_i)
-          puts "#{o.key} #{ts}"
+          puts "#{server_id}: #{o.key} #{ts}"
           snapshots << new(o.member, server_id, ts)
         else
-          puts "WARN: no timestamp for #{o.key}. Ignoring file"
+          puts "#{server_id}: WARN: no timestamp for #{o.key}. Ignoring file"
         end
       end
     end
@@ -33,7 +33,7 @@ class Snapshots
   end
 
   def delete!
-    puts "DEL #{node.key} #{ts}"
+    puts "#{server_id}: DEL #{node.key} #{ts}"
     node.delete unless ENV['DRY_RUN']
   end
 
