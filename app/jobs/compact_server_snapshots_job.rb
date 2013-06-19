@@ -36,6 +36,11 @@ class CompactServerSnapshotsJob
     day    = hour * 24
     week   = day * 7
 
+    # keep 4 secondies
+    ingroup, outgroup = snaps.take_time_group(4, second)
+    keep += ingroup
+    delete += outgroup
+
     # keep 6 hourlies
     ingroup, outgroup = snaps.take_time_group(6, hour)
     keep += ingroup
