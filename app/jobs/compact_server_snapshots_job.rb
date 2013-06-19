@@ -56,8 +56,11 @@ class CompactServerSnapshotsJob
 
     # keep 7 dailies
     puts "#{legacy_server_id}: KEEP #{keep.map(&:ts)}"
-    delete.each do |snap|
-      snap.delete!
+
+    if keep.any? # only delete if we're keeping something. Safeguards against me fucking up
+      delete.each do |snap|
+        snap.delete!
+      end
     end
   end
 end
