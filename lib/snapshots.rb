@@ -33,8 +33,12 @@ class Snapshots
   end
 
   def delete!
-    puts "#{server_id}: DEL #{node.key} #{ts}"
-    node.delete unless ENV['DRY_RUN']
+    if ENV['DRY_RUN']
+      puts "#{server_id}: DEL (dry run) #{node.key} #{ts}"
+    else
+      puts "#{server_id}: DEL #{node.key} #{ts}"
+      node.delete
+    end
   end
 
   def self.s3

@@ -5,10 +5,12 @@ class Array
   def take_time_group(count, seconds)
     ingroup = []
     outgroup = []
-    ts = Time.now
+
+    ts = nil
     while ingroup.size < count && item = pop
-      diff = ts - item.ts
-      if diff >= seconds
+      diff = ts - item.ts if ts
+      # puts "#{ts} - #{item.ts} = #{diff} >= #{seconds} #{diff >= seconds if ts}"
+      if ts.nil? || diff >= seconds
         ts = item.ts
         ingroup << item
       else
