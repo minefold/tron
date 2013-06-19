@@ -34,7 +34,7 @@ class Snapshots
 
   def delete!
     puts "DEL #{node.key} #{ts}"
-    node.delete
+    node.delete unless ENV['DRY_RUN']
   end
 
   def self.s3
