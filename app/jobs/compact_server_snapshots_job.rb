@@ -36,31 +36,28 @@ class CompactServerSnapshotsJob
     day    = hour * 24
     week   = day * 7
 
-    # keep 4 secondies
-    ingroup, outgroup = snaps.take_time_group(4, second)
+    # keep 2 secondies
+    ingroup, outgroup = snaps.take_time_group(2, second)
     keep += ingroup
     delete += outgroup
 
-    # keep 6 hourlies
-    ingroup, outgroup = snaps.take_time_group(6, hour)
+    # keep 3 hourlies
+    ingroup, outgroup = snaps.take_time_group(3, hour)
     keep += ingroup
     delete += outgroup
 
-    # keep 7 dailies
-    ingroup, outgroup = snaps.take_time_group(7, day)
+    # keep 2 dailies
+    ingroup, outgroup = snaps.take_time_group(2, day)
     keep += ingroup
     delete += outgroup
 
-    # keep 4 weeklies
-    ingroup, outgroup = snaps.take_time_group(4, week)
+    # keep 2 weeklies
+    ingroup, outgroup = snaps.take_time_group(2, week)
     keep += ingroup
     delete += outgroup
 
     # delete the rest
     delete += snaps
-
-    # keep 7 dailies
-    puts "#{legacy_server_id}: KEEP #{keep.map(&:ts)}"
 
     if keep.any? # only delete if we're keeping something. Safeguards against me fucking up
       delete.each do |snap|
