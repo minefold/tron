@@ -41,18 +41,18 @@ class CompactServerSnapshotsJob
     keep += ingroup
     delete += outgroup
 
-    # keep 3 hourlies
-    ingroup, outgroup = snaps.take_time_group(3, hour)
+    # keep 1 hourlies
+    ingroup, outgroup = snaps.take_time_group(1, hour)
     keep += ingroup
     delete += outgroup
 
-    # keep 2 dailies
-    ingroup, outgroup = snaps.take_time_group(2, day)
+    # keep 1 dailies
+    ingroup, outgroup = snaps.take_time_group(1, day)
     keep += ingroup
     delete += outgroup
 
-    # keep 2 weeklies
-    ingroup, outgroup = snaps.take_time_group(2, week)
+    # keep 1 weeklies
+    ingroup, outgroup = snaps.take_time_group(1, week)
     keep += ingroup
     delete += outgroup
 
